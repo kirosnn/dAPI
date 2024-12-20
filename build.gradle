@@ -33,11 +33,6 @@ tasks.withType(JavaCompile).all {
     }
 }
 
-
-tasks.jar {
-    archiveBaseName.set('dAPI')
-}
-
 processResources {
     def props = [version: version]
     inputs.properties props
