@@ -1,4 +1,4 @@
-package fr.kirosnn.dAPI.gui;
+package fr.kirosnn.dAPI.guis;
 
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
@@ -12,8 +12,13 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -53,7 +58,7 @@ public abstract class BaseGUI implements Listener {
      *
      * @return Le plugin Bukkit détecté, ou null si introuvable.
      */
-    private Plugin getCallingPlugin() {
+    private @Nullable Plugin getCallingPlugin() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         for (StackTraceElement element : stackTrace) {
             try {
@@ -77,7 +82,7 @@ public abstract class BaseGUI implements Listener {
      * @param flags    Les flags d'item à ajouter (null si aucun flag).
      * @param lore     Le lore à définir (null si aucun lore).
      */
-    public void setItems(List<Integer> slots, ItemStack item, Consumer<InventoryClickEvent> action,
+    public void setItems(@NotNull List<Integer> slots, ItemStack item, Consumer<InventoryClickEvent> action,
                          Map<Enchantment, Integer> enchants, List<ItemFlag> flags, List<String> lore) {
         for (int slot : slots) {
             setItem(slot, item, action, enchants, flags, lore);
@@ -107,14 +112,16 @@ public abstract class BaseGUI implements Listener {
     /**
      * Actions prédéfinies : Fermer le menu.
      */
-    public static Consumer<InventoryClickEvent> closeAction() {
+    @Contract(pure = true)
+    public static @NotNull Consumer<InventoryClickEvent> closeAction() {
         return event -> event.getWhoClicked().closeInventory();
     }
 
     /**
      * Actions prédéfinies : Exécuter une commande.
      */
-    public static Consumer<InventoryClickEvent> commandAction(String command) {
+    @Contract(pure = true)
+    public static @NotNull Consumer<InventoryClickEvent> commandAction(String command) {
         return event -> {
             Player player = (Player) event.getWhoClicked();
             player.performCommand(command);
@@ -125,7 +132,8 @@ public abstract class BaseGUI implements Listener {
     /**
      * Actions prédéfinies : Ouvrir un site Web avec un message personnalisé.
      */
-    public static Consumer<InventoryClickEvent> openWebsiteAction(String url, String message) {
+    @Contract(pure = true)
+    public static @NotNull Consumer<InventoryClickEvent> openWebsiteAction(String url, String message) {
         return event -> {
             Player player = (Player) event.getWhoClicked();
             player.closeInventory();
@@ -136,7 +144,8 @@ public abstract class BaseGUI implements Listener {
     /**
      * Actions prédéfinies : Ouvrir une autre GUI.
      */
-    public static Consumer<InventoryClickEvent> openGUIAction(BaseGUI gui, Player player) {
+    @Contract(pure = true)
+    public static @NotNull Consumer<InventoryClickEvent> openGUIAction(BaseGUI gui, Player player) {
         return event -> gui.open(player);
     }
 
@@ -190,7 +199,7 @@ public abstract class BaseGUI implements Listener {
      *
      * @param player Le joueur.
      */
-    public void open(Player player) {
+    public void open(@NotNull Player player) {
         initialize();
         player.openInventory(inventory);
     }
@@ -200,7 +209,7 @@ public abstract class BaseGUI implements Listener {
      *
      * @param event L'événement de clic.
      */
-    public void handleClick(InventoryClickEvent event) {
+    public void handleClick(@NotNull InventoryClickEvent event) {
         if (event.getClickedInventory() != null && event.getClickedInventory().equals(inventory)) {
             event.setCancelled(true);
             Consumer<InventoryClickEvent> action = actions.get(event.getSlot());
@@ -218,7 +227,7 @@ public abstract class BaseGUI implements Listener {
      * @param flags      Les flags à ajouter.
      * @param lore       Le lore à définir.
      */
-    private void configureItem(ItemStack item, Map<Enchantment, Integer> enchants, List<ItemFlag> flags, List<String> lore) {
+    private void configureItem(@NotNull ItemStack item, Map<Enchantment, Integer> enchants, List<ItemFlag> flags, List<String> lore) {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
@@ -243,7 +252,7 @@ public abstract class BaseGUI implements Listener {
      * @param event L'événement de clic.
      */
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(@NotNull InventoryClickEvent event) {
         if (event.getClickedInventory() != null && event.getClickedInventory().equals(inventory)) {
             event.setCancelled(true);
             Consumer<InventoryClickEvent> action = actions.get(event.getSlot());
@@ -259,7 +268,7 @@ public abstract class BaseGUI implements Listener {
      * @param event L'événement de drag and drop.
      */
     @EventHandler
-    public void onInventoryDrag(InventoryDragEvent event) {
+    public void onInventoryDrag(@NotNull InventoryDragEvent event) {
         if (event.getInventory().equals(inventory)) {
             event.setCancelled(true);
         }
