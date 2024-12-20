@@ -1,0 +1,6 @@
+name: dAPI
+version: '0.0.1'
+main: fr.kirosnn.dAPI.dAPI
+api-version: '1.20'
+authors: [ kirosnn ]
+website: wiki.kirosnn.fr
