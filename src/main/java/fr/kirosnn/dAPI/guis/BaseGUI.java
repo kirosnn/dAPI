@@ -45,32 +45,20 @@ public abstract class BaseGUI implements Listener {
      * Enregistre automatiquement la classe comme Listener auprès de Bukkit.
      */
     private void registerListenerAutomatically() {
-        Plugin plugin = getCallingPlugin();
+        Plugin plugin = getPlugin();
         if (plugin != null) {
             Bukkit.getPluginManager().registerEvents(this, plugin);
         } else {
-            throw new IllegalStateException("Impossible de détecter le plugin pour enregistrer BaseGUI.");
+            throw new IllegalStateException("Le plugin ne peut pas être null.");
         }
     }
 
     /**
-     * Récupère le plugin appelant en utilisant la pile d'appels.
+     * Méthode abstraite pour obtenir le plugin.
      *
-     * @return Le plugin Bukkit détecté, ou null si introuvable.
+     * @return Le plugin appelant.
      */
-    private @Nullable Plugin getCallingPlugin() {
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        for (StackTraceElement element : stackTrace) {
-            try {
-                Class<?> clazz = Class.forName(element.getClassName());
-                if (Plugin.class.isAssignableFrom(clazz)) {
-                    return Bukkit.getPluginManager().getPlugin(clazz.getSimpleName());
-                }
-            } catch (ClassNotFoundException ignored) {
-            }
-        }
-        return null;
-    }
+    protected abstract @NotNull Plugin getPlugin();
 
     /**
      * Définit un item dans plusieurs emplacements avec une action et configuration complète.
