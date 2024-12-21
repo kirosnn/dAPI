@@ -6,10 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class CommandBase implements CommandExecutor, TabCompleter {
 
@@ -80,13 +77,24 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
      */
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
-        if (args.length > 0) {
+        if (args.length == 1) {
+            List<String> completions = new ArrayList<>();
+            for (String subCommandName : subCommands.keySet()) {
+                if (subCommandName.toLowerCase().startsWith(args[0].toLowerCase())) {
+                    if (subCommands.get(subCommandName).hasPermission(sender)) {
+                        completions.add(subCommandName);
+                    }
+                }
+            }
+            return completions;
+        } else if (args.length > 1) {
             SubCommand subCommand = subCommands.get(args[0].toLowerCase());
             if (subCommand != null && subCommand.hasPermission(sender)) {
                 return subCommand.tabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
             }
         }
-        return onTabComplete(sender, command, alias, args);
+
+        return new ArrayList<>();
     }
 
     /**
