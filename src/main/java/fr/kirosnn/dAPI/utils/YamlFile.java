@@ -6,6 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
+import java.util.Set;
 
 public class YamlFile {
 
@@ -15,7 +17,7 @@ public class YamlFile {
     private FileConfiguration configuration;
 
     /**
-     * Constructeur du gestionnaire YAML en lecture seule
+     * Constructeur du gestionnaire YAML
      *
      * @param plugin   Plugin Bukkit/Spigot
      * @param fileName Nom du fichier YAML (ex. "config.yml")
@@ -27,6 +29,9 @@ public class YamlFile {
 
         if (!file.exists()) {
             plugin.saveResource(fileName, false);
+            plugin.getLogger().info("The file " + fileName + " did not exist and has been created.");
+        } else {
+            plugin.getLogger().info("The file " + fileName + " already exists.");
         }
 
         this.configuration = YamlConfiguration.loadConfiguration(file);
@@ -37,13 +42,61 @@ public class YamlFile {
      *
      * @param path         Chemin de la clé
      * @param defaultValue Valeur par défaut si la clé n'existe pas
-     * @return Valeur associée à la clé ou null si absente
+     * @return Valeur associée à la clé ou la valeur par défaut
      */
     public <T> T get(String path, T defaultValue) {
         if (configuration.contains(path)) {
             return (T) configuration.get(path);
         }
         return defaultValue;
+    }
+
+    /**
+     * Récupère une liste d'éléments dans le fichier YAML.
+     *
+     * @param path Chemin de la clé
+     * @param <T>  Type des éléments dans la liste
+     * @return Liste des éléments ou null si absente
+     */
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getList(String path) {
+        return (List<T>) configuration.getList(path);
+    }
+
+    /**
+     * Récupère une liste d'éléments dans le fichier YAML avec une valeur par défaut.
+     *
+     * @param path         Chemin de la clé
+     * @param defaultValue Valeur par défaut si la clé n'existe pas
+     * @return Liste des éléments ou la valeur par défaut
+     */
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getList(String path, List<T> defaultValue) {
+        List<T> list = (List<T>) configuration.getList(path);
+        return (list != null) ? list : defaultValue;
+    }
+
+    /**
+     * Récupère un ensemble de clés enfants pour un chemin donné.
+     *
+     * @param path     Chemin de la clé
+     * @param deepMode Si true, inclut les sous-clés en profondeur
+     * @return Ensemble des clés enfants
+     */
+    public Set<String> getKeys(String path, boolean deepMode) {
+        return configuration.getConfigurationSection(path) != null
+                ? configuration.getConfigurationSection(path).getKeys(deepMode)
+                : Set.of();
+    }
+
+    /**
+     * Définit une valeur dans le fichier YAML.
+     *
+     * @param path  Chemin de la clé
+     * @param value Valeur à définir
+     */
+    public void set(String path, Object value) {
+        configuration.set(path, value);
     }
 
     /**
@@ -54,11 +107,32 @@ public class YamlFile {
     }
 
     /**
+     * Sauvegarde la configuration actuelle dans le fichier.
+     */
+    public void save() {
+        try {
+            configuration.save(file);
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to save the file " + fileName + ": " + e.getMessage());
+        }
+    }
+
+    /**
      * Récupère la configuration brute.
      *
      * @return FileConfiguration associée
      */
     public FileConfiguration getConfig() {
         return configuration;
+    }
+
+    /**
+     * Vérifie si une clé existe dans le fichier YAML.
+     *
+     * @param path Chemin de la clé
+     * @return True si la clé existe, sinon False
+     */
+    public boolean contains(String path) {
+        return configuration.contains(path);
     }
 }
