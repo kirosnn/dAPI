@@ -49,7 +49,7 @@ public abstract class BaseGUI implements Listener {
         if (plugin != null) {
             Bukkit.getPluginManager().registerEvents(this, plugin);
         } else {
-            throw new IllegalStateException("Le plugin ne peut pas être null.");
+            throw new IllegalStateException("Le plugin ne peut pas être null. Il faut utiliser @NotNull Plugin getPlugin();");
         }
     }
 
