@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
+import java.util.Collections;
 
 public class YamlFile {
 
@@ -86,7 +87,7 @@ public class YamlFile {
     public Set<String> getKeys(String path, boolean deepMode) {
         return configuration.getConfigurationSection(path) != null
                 ? configuration.getConfigurationSection(path).getKeys(deepMode)
-                : Set.of();
+                : Collections.emptySet();
     }
 
     /**
