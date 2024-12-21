@@ -87,7 +87,7 @@ public class DiscordWebhook {
         }
 
         int responseCode = connection.getResponseCode();
-        if (responseCode != 204) { // 204: No Content (succès pour Discord webhooks)
+        if (responseCode != 204) {
             throw new Exception("Failed to send webhook: HTTP " + responseCode);
         }
     }
