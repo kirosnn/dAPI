@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +25,7 @@ import java.util.function.Consumer;
  */
 public abstract class BaseGUI implements Listener {
 
+    private final Plugin plugin;
     private final Inventory inventory;
     private final Map<Integer, Consumer<InventoryClickEvent>> actions;
 
@@ -35,7 +35,11 @@ public abstract class BaseGUI implements Listener {
      * @param title Le titre de l'inventaire.
      * @param rows Le nombre de lignes (1 à 6).
      */
-    public BaseGUI(String title, int rows) {
+    public BaseGUI(String title, int rows, Plugin plugin) {
+        if (plugin == null) {
+            throw new IllegalStateException("Le plugin ne peut pas être null. Veuillez fournir une instance valide.");
+        }
+        this.plugin = plugin;
         this.inventory = Bukkit.createInventory(null, rows * 9, title);
         this.actions = new HashMap<>();
         registerListenerAutomatically();
@@ -54,12 +58,13 @@ public abstract class BaseGUI implements Listener {
     }
 
     /**
-     * Méthode abstraite pour obtenir le plugin.
+     * Méthode pour obtenir le plugin.
      *
      * @return Le plugin appelant.
      */
-    protected abstract @NotNull Plugin getPlugin();
-
+    protected Plugin getPlugin() {
+        return plugin;
+    }
     /**
      * Définit un item dans plusieurs emplacements avec une action et configuration complète.
      *
