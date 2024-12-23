@@ -1,5 +1,6 @@
 package fr.kirosnn.dAPI.utils;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,16 +21,31 @@ public class YamlFile {
     /**
      * Constructeur du gestionnaire YAML
      *
-     * @param plugin   Plugin Bukkit/Spigot
-     * @param fileName Nom du fichier YAML (ex. "config.yml")
+     * @param plugin       Plugin Bukkit/Spigot
+     * @param folderPath   Chemin du dossier relatif dans le dossier du plugin (null ou vide pour le dossier racine)
+     * @param fileName     Nom du fichier YAML (ex. "config.yml")
      */
-    public YamlFile(@NotNull JavaPlugin plugin, String fileName) {
+    public YamlFile(@NotNull JavaPlugin plugin, String folderPath, String fileName) {
         this.plugin = plugin;
         this.fileName = fileName;
-        this.file = new File(plugin.getDataFolder(), fileName);
+
+        File targetFolder = (folderPath == null || folderPath.isEmpty())
+                ? plugin.getDataFolder()
+                : new File(plugin.getDataFolder(), folderPath);
+
+        if (!targetFolder.exists()) {
+            targetFolder.mkdirs();
+            plugin.getLogger().info("The folder " + targetFolder.getPath() + " has been created.");
+        }
+
+        this.file = new File(targetFolder, fileName);
 
         if (!file.exists()) {
-            plugin.saveResource(fileName, false);
+            String resourcePath = (folderPath == null || folderPath.isEmpty())
+                    ? fileName
+                    : folderPath + "/" + fileName;
+
+            plugin.saveResource(resourcePath, false);
             plugin.getLogger().info("The file " + fileName + " did not exist and has been created.");
         } else {
             plugin.getLogger().info("The file " + fileName + " already exists.");
@@ -135,5 +151,15 @@ public class YamlFile {
      */
     public boolean contains(String path) {
         return configuration.contains(path);
+    }
+
+    /**
+     * Récupère une section de configuration pour un chemin donné.
+     *
+     * @param path Chemin de la section
+     * @return ConfigurationSection associée ou null si inexistante
+     */
+    public ConfigurationSection getConfigurationSection(String path) {
+        return configuration.getConfigurationSection(path);
     }
 }
