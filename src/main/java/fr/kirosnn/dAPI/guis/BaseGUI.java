@@ -28,6 +28,7 @@ public abstract class BaseGUI implements Listener {
     private final Plugin plugin;
     private final Inventory inventory;
     private final Map<Integer, Consumer<InventoryClickEvent>> actions;
+    private Player viewer;
 
     /**
      * Constructeur de la GUI.
@@ -65,6 +66,7 @@ public abstract class BaseGUI implements Listener {
     protected Plugin getPlugin() {
         return plugin;
     }
+
     /**
      * Définit un item dans plusieurs emplacements avec une action et configuration complète.
      *
@@ -194,6 +196,7 @@ public abstract class BaseGUI implements Listener {
      */
     public void open(@NotNull Player player) {
         initialize();
+        this.viewer = player;
         player.openInventory(inventory);
     }
 
@@ -265,6 +268,10 @@ public abstract class BaseGUI implements Listener {
         if (event.getInventory().equals(inventory)) {
             event.setCancelled(true);
         }
+    }
+
+    public Player getViewer() {
+        return this.viewer;
     }
 
     /**
