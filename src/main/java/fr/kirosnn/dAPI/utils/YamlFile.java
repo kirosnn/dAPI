@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Collections;
 
@@ -66,6 +67,31 @@ public class YamlFile {
             return (T) configuration.get(path);
         }
         return defaultValue;
+    }
+
+    /**
+     * Récupère une valeur dans le fichier YAML, traduit les codes couleurs (§ vers &)
+     * et remplace les placeholders existants.
+     *
+     * @param path         Chemin de la clé
+     * @param defaultValue Valeur par défaut si la clé n'existe pas
+     * @param placeholders Map des placeholders à remplacer dans la valeur
+     * @return Valeur traduite et placeholders remplacés ou la valeur par défaut
+     */
+    public String getTranslated(String path, String defaultValue, Map<String, String> placeholders) {
+        String value = get(path, defaultValue);
+
+        if (value == null) {
+            return defaultValue;
+        }
+
+        value = value.replace("§", "&");
+
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            value = value.replace(entry.getKey(), entry.getValue());
+        }
+
+        return value;
     }
 
     /**
