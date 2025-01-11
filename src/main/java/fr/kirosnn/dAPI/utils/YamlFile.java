@@ -87,6 +87,10 @@ public class YamlFile {
 
         value = value.replace("§", "&");
 
+        if (placeholders == null) {
+            placeholders = Collections.emptyMap();
+        }
+
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             value = value.replace(entry.getKey(), entry.getValue());
         }

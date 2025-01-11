@@ -94,11 +94,9 @@ public class SQLiteDatabase {
      */
     public void executeUpdate(String query) throws SQLException {
         ensureConnection();
-        plugin.getLogger().info("Executing update query: " + query);
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.executeUpdate();
         }
-        plugin.getLogger().info("Query executed successfully.");
     }
 
     /**
@@ -110,7 +108,6 @@ public class SQLiteDatabase {
      */
     public ResultSet executeQuery(String query) throws SQLException {
         ensureConnection();
-        plugin.getLogger().info("Executing query: " + query);
         PreparedStatement statement = this.connection.prepareStatement(query);
         return statement.executeQuery();
     }
