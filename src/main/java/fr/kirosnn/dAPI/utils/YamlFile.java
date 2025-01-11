@@ -85,7 +85,7 @@ public class YamlFile {
             return defaultValue;
         }
 
-        value = value.replace("§", "&");
+        value = value.replace("&", "§");
 
         if (placeholders == null) {
             placeholders = Collections.emptyMap();
