@@ -116,6 +116,17 @@ public class SQLiteDatabase {
     }
 
     /**
+     * Return database.
+     *
+     * @return Coonection SQLite.
+     * @throws SQLException If connection is close or equal null.
+     */
+    public Connection getConnection() throws SQLException {
+        ensureConnection();
+        return this.connection;
+    }
+
+    /**
      * Checks if the database is connected.
      *
      * @return true if connected, false otherwise.
