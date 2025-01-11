@@ -32,7 +32,7 @@ public class LoggerUtils {
      * @param message Contenu du message
      */
     public void infoPlugin(@NotNull String message) {
-        plugin.getServer().getConsoleSender().sendMessage(plugin.getName() + " ✦ " + message);
+        plugin.getServer().getConsoleSender().sendMessage("[" + plugin.getName() + "]" + " ✦ " + message);
     }
 
     /**

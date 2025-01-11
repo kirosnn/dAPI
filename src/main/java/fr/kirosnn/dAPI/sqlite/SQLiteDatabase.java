@@ -52,7 +52,6 @@ public class SQLiteDatabase {
      */
     public void connect() throws SQLException {
         if (this.connection != null && !this.connection.isClosed()) {
-            plugin.getLogger().info("The database is already connected.");
             return;
         }
         plugin.getLogger().info("Connecting to the database...");
@@ -67,9 +66,7 @@ public class SQLiteDatabase {
      */
     public void ensureConnection() throws SQLException {
         if (this.connection == null || this.connection.isClosed()) {
-            plugin.getLogger().warning("Database connection lost. Attempting to reconnect...");
             connect();
-            plugin.getLogger().info("Database connection restored.");
         }
     }
 
