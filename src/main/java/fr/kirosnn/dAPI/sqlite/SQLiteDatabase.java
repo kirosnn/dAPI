@@ -60,13 +60,25 @@ public class SQLiteDatabase {
     }
 
     /**
+     * Opens a connection to the database.
+     *
+     * @throws SQLException If an error occurs while connecting.
+     */
+    public void reconnect() throws SQLException {
+        if (this.connection != null && !this.connection.isClosed()) {
+            return;
+        }
+        this.connection = DriverManager.getConnection("jdbc:sqlite:" + databaseFile.getAbsolutePath());
+    }
+
+    /**
      * Ensures the database connection is alive. Reconnects if the connection is lost.
      *
      * @throws SQLException If the connection cannot be restored.
      */
     public void ensureConnection() throws SQLException {
         if (this.connection == null || this.connection.isClosed()) {
-            connect();
+            reconnect();
         }
     }
 
