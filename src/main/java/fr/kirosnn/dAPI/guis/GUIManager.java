@@ -21,7 +21,8 @@ public class GUIManager implements Listener {
      */
     @EventHandler
     public void onInventoryClick(@NotNull InventoryClickEvent event) {
-        if (event.getView().getTopInventory().getHolder() instanceof BaseGUI baseGUI) {
+        if (event.getView().getTopInventory().getHolder() instanceof BaseGUI) {
+            BaseGUI baseGUI = (BaseGUI) event.getView().getTopInventory().getHolder();
             event.setCancelled(true);
 
             if (event.getClickedInventory() != null && event.getClickedInventory().equals(event.getView().getTopInventory())) {
