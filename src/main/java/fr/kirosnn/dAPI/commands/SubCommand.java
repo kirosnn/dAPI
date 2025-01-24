@@ -5,32 +5,36 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Interface for creating subcommands.
+ */
 public interface SubCommand {
+
     /**
-     * Exécute la sous-commande.
+     * Executes the subcommand.
      *
-     * @param sender L'émetteur de la commande.
-     * @param args   Les arguments de la commande.
-     * @return True si la commande est valide.
+     * @param sender The command sender.
+     * @param args   The command arguments.
+     * @return True if the subcommand is valid.
      */
     boolean execute(CommandSender sender, String[] args);
 
     /**
-     * Complétion automatique pour cette sous-commande.
+     * Auto-completes options for this subcommand.
      *
-     * @param sender L'émetteur de la commande.
-     * @param args   Les arguments de la commande.
-     * @return Une liste d'options disponibles.
+     * @param sender The command sender.
+     * @param args   The command arguments.
+     * @return A list of available options.
      */
     default List<String> tabComplete(CommandSender sender, String[] args) {
         return Collections.emptyList();
     }
 
     /**
-     * Vérifie si le joueur a la permission pour exécuter cette commande.
+     * Checks if the sender has permission to execute this command.
      *
-     * @param sender L'émetteur de la commande.
-     * @return True si l'émetteur a la permission.
+     * @param sender The command sender.
+     * @return True if the sender has permission.
      */
     default boolean hasPermission(CommandSender sender) {
         return true;

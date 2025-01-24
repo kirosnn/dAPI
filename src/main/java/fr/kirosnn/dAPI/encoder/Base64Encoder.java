@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+/**
+ * The type Base 64 encoder.
+ */
 public class Base64Encoder {
 
     /**

@@ -11,6 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The type Sq lite database.
+ */
 public class SQLiteDatabase {
 
     private final File databaseFile;
@@ -20,8 +23,8 @@ public class SQLiteDatabase {
     /**
      * Constructor to initialize a SQLite database inside a "databases" folder.
      *
-     * @param plugin  The plugin instance.
-     * @param dbName  The name of the database file (with .db extension).
+     * @param plugin The plugin instance.
+     * @param dbName The name of the database file (with .db extension).
      * @throws IOException If the file or folders cannot be created.
      */
     public SQLiteDatabase(@NotNull Plugin plugin, String dbName) throws IOException {

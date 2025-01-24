@@ -8,47 +8,50 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+/**
+ * Abstract class for creating custom commands with subcommands.
+ */
 public abstract class CommandBase implements CommandExecutor, TabCompleter {
 
     private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private String noPermissionMessage = "§cVous n'avez pas la permission pour utiliser cette commande.";
+    private String noPermissionMessage = "§cYou don't have permission to use this command.";
 
     /**
-     * Définit le message à afficher si l'utilisateur n'a pas la permission.
+     * Sets the message to display if the user lacks permission.
      *
-     * @param message Le message de refus de permission.
+     * @param message The no-permission message.
      */
     public void setNoPermissionMessage(@NotNull String message) {
         this.noPermissionMessage = message;
     }
 
     /**
-     * Retourne le message actuel de refus de permission.
+     * Gets the current no-permission message.
      *
-     * @return Le message de refus de permission.
+     * @return The no-permission message.
      */
     public String getNoPermissionMessage() {
         return noPermissionMessage;
     }
 
     /**
-     * Enregistre une sous-commande.
+     * Registers a subcommand.
      *
-     * @param name       Le nom de la sous-commande.
-     * @param subCommand La logique de la sous-commande.
+     * @param name       The name of the subcommand.
+     * @param subCommand The logic for the subcommand.
      */
     public void registerSubCommand(@NotNull String name, SubCommand subCommand) {
         subCommands.put(name.toLowerCase(), subCommand);
     }
 
     /**
-     * Exécute la commande principale ou une sous-commande.
+     * Executes the main command or a subcommand.
      *
-     * @param sender  L'émetteur de la commande.
-     * @param command La commande exécutée.
-     * @param label   L'alias utilisé.
-     * @param args    Les arguments de la commande.
-     * @return True si la commande est valide.
+     * @param sender  The command sender.
+     * @param command The command being executed.
+     * @param label   The alias used.
+     * @param args    The command arguments.
+     * @return True if the command is valid.
      */
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
@@ -67,13 +70,13 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
     }
 
     /**
-     * Complétion automatique des sous-commandes.
+     * Auto-completes subcommands.
      *
-     * @param sender L'émetteur de la commande.
-     * @param command La commande.
-     * @param alias L'alias utilisé.
-     * @param args Les arguments de la commande.
-     * @return Une liste d'options disponibles.
+     * @param sender  The command sender.
+     * @param command The command.
+     * @param alias   The alias used.
+     * @param args    The command arguments.
+     * @return A list of available options.
      */
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
@@ -98,11 +101,11 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
     }
 
     /**
-     * Implémenter cette méthode pour définir la logique de la commande principale.
+     * Implement this method to define the logic of the main command.
      *
-     * @param sender L'émetteur de la commande.
-     * @param args   Les arguments de la commande.
-     * @return True si la commande est valide.
+     * @param sender The command sender.
+     * @param args   The command arguments.
+     * @return True if the command is valid.
      */
     public abstract boolean execute(CommandSender sender, String[] args);
 }

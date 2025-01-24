@@ -3,43 +3,46 @@ package fr.kirosnn.dAPI.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class for managing placeholders.
+ */
 public class Placeholders {
     private static final Map<String, Object> placeholders = new HashMap<>();
 
     /**
-     * Ajoute ou modifie un placeholder.
+     * Adds or updates a placeholder.
      *
-     * @param key   la clé du placeholder (exemple : "%server_name%")
-     * @param value la valeur associée (exemple : "MyAwesomeServer")
+     * @param key   The placeholder key (e.g., "%server_name%")
+     * @param value The associated value (e.g., "MyAwesomeServer")
      */
     public static void setPlaceholder(String key, Object value) {
         placeholders.put(key, value);
     }
 
     /**
-     * Récupère la valeur d'un placeholder.
+     * Retrieves the value of a placeholder.
      *
-     * @param key la clé du placeholder (exemple : "%server_name%")
-     * @return la valeur associée ou null si le placeholder n'existe pas
+     * @param key The placeholder key (e.g., "%server_name%")
+     * @return The associated value, or null if the placeholder does not exist
      */
     public static Object getPlaceholder(String key) {
         return placeholders.get(key);
     }
 
     /**
-     * Vérifie si un placeholder existe.
+     * Checks if a placeholder exists.
      *
-     * @param key la clé du placeholder
-     * @return true si le placeholder existe, sinon false
+     * @param key The placeholder key
+     * @return true if the placeholder exists, otherwise false
      */
     public static boolean hasPlaceholder(String key) {
         return placeholders.containsKey(key);
     }
 
     /**
-     * Supprime un placeholder.
+     * Removes a placeholder.
      *
-     * @param key la clé du placeholder
+     * @param key The placeholder key
      */
     public static void removePlaceholder(String key) {
         placeholders.remove(key);

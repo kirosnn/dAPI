@@ -8,16 +8,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Gestionnaire global pour les événements de GUI.
- * Empêche toute interaction illégitime avec les inventaires gérés.
- */
 public class GUIManager implements Listener {
 
     /**
-     * Capture les clics dans les inventaires et empêche toute modification non autorisée.
+     * On inventory click.
      *
-     * @param event L'événement de clic.
+     * @param event the event
      */
     @EventHandler
     public void onInventoryClick(@NotNull InventoryClickEvent event) {
@@ -40,9 +36,9 @@ public class GUIManager implements Listener {
     }
 
     /**
-     * Capture les drag and drop dans les inventaires et empêche toute modification non autorisée.
+     * On inventory drag.
      *
-     * @param event L'événement de drag and drop.
+     * @param event the event
      */
     @EventHandler
     public void onInventoryDrag(@NotNull InventoryDragEvent event) {

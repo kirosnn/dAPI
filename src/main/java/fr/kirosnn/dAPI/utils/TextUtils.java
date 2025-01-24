@@ -3,13 +3,16 @@ package fr.kirosnn.dAPI.utils;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Utility class for text-related operations.
+ */
 public class TextUtils {
 
     /**
-     * Convertis les codes couleurs de '&' à '§'.
+     * Converts color codes from '&' to '§'.
      *
-     * @param text L'entrée avec '&' comme code couleur.
-     * @return La fin formatté avec '§' comme code couleur.
+     * @param text The input string with '&' as color code.
+     * @return The formatted string with '§' as color code.
      */
     public static @NotNull String colorize(String text) {
         if (text == null) return "";

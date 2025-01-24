@@ -4,50 +4,53 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Utility class for logging.
+ */
 public class LoggerUtils {
 
     private final JavaPlugin plugin;
 
     /**
-     * Constructeur du LoggerUtils pour initialiser le plugin.
+     * Constructor for LoggerUtils to initialize the plugin.
      *
-     * @param plugin Plugin appelant
+     * @param plugin The calling plugin
      */
     public LoggerUtils(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
     /**
-     * Affiche un message INFO avec un préfixe stylisé.
+     * Logs an INFO message with a stylized prefix.
      *
-     * @param message Contenu du message
+     * @param message The content of the message
      */
     public void info(@NotNull String message) {
         Bukkit.getServer().getConsoleSender().sendMessage("✦ " + message);
     }
 
     /**
-     * Affiche un message INFO par le plugin avec un préfixe stylisé.
+     * Logs an INFO message from the plugin with a stylized prefix.
      *
-     * @param message Contenu du message
+     * @param message The content of the message
      */
     public void infoPlugin(@NotNull String message) {
         plugin.getServer().getConsoleSender().sendMessage("[" + plugin.getName() + "]" + " ✦ " + message);
     }
 
     /**
-     * Affiche un message SEVERE (erreur) avec un préfixe stylisé.
+     * Logs a SEVERE (error) message with a stylized prefix.
      *
-     * @param message Contenu du message
+     * @param message The content of the message
      */
     public void error(@NotNull String message) {
         plugin.getLogger().severe("✦ " + message);
     }
 
     /**
-     * Affiche un message WARNING avec un préfixe stylisé.
+     * Logs a WARNING message with a stylized prefix.
      *
-     * @param message Contenu du message
+     * @param message The content of the message
      */
     public void warn(@NotNull String message) {
         plugin.getLogger().warning("✦ " + message);

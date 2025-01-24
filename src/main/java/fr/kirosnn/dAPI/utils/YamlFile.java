@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Collections;
 
+/**
+ * YAML file handler utility class.
+ */
 public class YamlFile {
 
     private final JavaPlugin plugin;
@@ -20,11 +23,11 @@ public class YamlFile {
     private FileConfiguration configuration;
 
     /**
-     * Constructeur du gestionnaire YAML
+     * Constructor for the YAML file manager.
      *
-     * @param plugin       Plugin Bukkit/Spigot
-     * @param folderPath   Chemin du dossier relatif dans le dossier du plugin (null ou vide pour le dossier racine)
-     * @param fileName     Nom du fichier YAML (ex. "config.yml")
+     * @param plugin     Bukkit/Spigot plugin
+     * @param folderPath Relative folder path inside the plugin directory (null or empty for the root folder)
+     * @param fileName   YAML file name (e.g., "config.yml")
      */
     public YamlFile(@NotNull JavaPlugin plugin, String folderPath, String fileName) {
         this.plugin = plugin;
@@ -56,11 +59,12 @@ public class YamlFile {
     }
 
     /**
-     * Récupère une valeur dans le fichier YAML.
+     * Retrieves a value from the YAML file.
      *
-     * @param path         Chemin de la clé
-     * @param defaultValue Valeur par défaut si la clé n'existe pas
-     * @return Valeur associée à la clé ou la valeur par défaut
+     * @param <T>          the type parameter
+     * @param path         Key path
+     * @param defaultValue Default value if the key does not exist
+     * @return Value associated with the key or the default value
      */
     public <T> T get(String path, T defaultValue) {
         if (configuration.contains(path)) {
@@ -70,13 +74,13 @@ public class YamlFile {
     }
 
     /**
-     * Récupère une valeur dans le fichier YAML, traduit les codes couleurs (§ vers &)
-     * et remplace les placeholders existants.
+     * Retrieves a value from the YAML file, translates color codes (§ to &)
+     * and replaces placeholders.
      *
-     * @param path         Chemin de la clé
-     * @param defaultValue Valeur par défaut si la clé n'existe pas
-     * @param placeholders Map des placeholders à remplacer dans la valeur
-     * @return Valeur traduite et placeholders remplacés ou la valeur par défaut
+     * @param path         Key path
+     * @param defaultValue Default value if the key does not exist
+     * @param placeholders Map of placeholders to replace in the value
+     * @return Translated value with placeholders replaced or the default value
      */
     public String getTranslated(String path, String defaultValue, Map<String, String> placeholders) {
         String value = get(path, defaultValue);
@@ -99,11 +103,11 @@ public class YamlFile {
     }
 
     /**
-     * Récupère une liste d'éléments dans le fichier YAML.
+     * Retrieves a list of elements from the YAML file.
      *
-     * @param path Chemin de la clé
-     * @param <T>  Type des éléments dans la liste
-     * @return Liste des éléments ou null si absente
+     * @param <T>  Type of elements in the list
+     * @param path Key path
+     * @return List of elements or null if absent
      */
     @SuppressWarnings("unchecked")
     public <T> List<T> getList(String path) {
@@ -111,11 +115,12 @@ public class YamlFile {
     }
 
     /**
-     * Récupère une liste d'éléments dans le fichier YAML avec une valeur par défaut.
+     * Retrieves a list of elements from the YAML file with a default value.
      *
-     * @param path         Chemin de la clé
-     * @param defaultValue Valeur par défaut si la clé n'existe pas
-     * @return Liste des éléments ou la valeur par défaut
+     * @param <T>          the type parameter
+     * @param path         Key path
+     * @param defaultValue Default value if the key does not exist
+     * @return List of elements or the default value
      */
     @SuppressWarnings("unchecked")
     public <T> List<T> getList(String path, List<T> defaultValue) {
@@ -124,11 +129,11 @@ public class YamlFile {
     }
 
     /**
-     * Récupère un ensemble de clés enfants pour un chemin donné.
+     * Retrieves a set of child keys for a given path.
      *
-     * @param path     Chemin de la clé
-     * @param deepMode Si true, inclut les sous-clés en profondeur
-     * @return Ensemble des clés enfants
+     * @param path     Key path
+     * @param deepMode If true, includes subkeys recursively
+     * @return Set of child keys
      */
     public Set<String> getKeys(String path, boolean deepMode) {
         return configuration.getConfigurationSection(path) != null
@@ -137,24 +142,24 @@ public class YamlFile {
     }
 
     /**
-     * Définit une valeur dans le fichier YAML.
+     * Sets a value in the YAML file.
      *
-     * @param path  Chemin de la clé
-     * @param value Valeur à définir
+     * @param path  Key path
+     * @param value Value to set
      */
     public void set(String path, Object value) {
         configuration.set(path, value);
     }
 
     /**
-     * Recharge le fichier YAML depuis le disque.
+     * Reloads the YAML file from disk.
      */
     public void reload() {
         configuration = YamlConfiguration.loadConfiguration(file);
     }
 
     /**
-     * Sauvegarde la configuration actuelle dans le fichier.
+     * Saves the current configuration to the file.
      */
     public void save() {
         try {
@@ -165,29 +170,38 @@ public class YamlFile {
     }
 
     /**
-     * Récupère la configuration brute.
+     * Retrieves the raw configuration.
      *
-     * @return FileConfiguration associée
+     * @return Associated FileConfiguration
      */
     public FileConfiguration getConfig() {
         return configuration;
     }
 
     /**
-     * Vérifie si une clé existe dans le fichier YAML.
+     * Checks if a key exists in the YAML file.
      *
-     * @param path Chemin de la clé
-     * @return True si la clé existe, sinon False
+     * @param path Key path
+     * @return True if the key exists, otherwise False
      */
     public boolean contains(String path) {
         return configuration.contains(path);
     }
 
     /**
-     * Récupère une section de configuration pour un chemin donné.
+     * Check if a file exists.
      *
-     * @param path Chemin de la section
-     * @return ConfigurationSection associée ou null si inexistante
+     * @return
+     */
+    public boolean exists() {
+        return file.exists() && configuration != null;
+    }
+
+    /**
+     * Retrieves a configuration section for a given path.
+     *
+     * @param path Path to the section
+     * @return Associated ConfigurationSection or null if nonexistent
      */
     public ConfigurationSection getConfigurationSection(String path) {
         return configuration.getConfigurationSection(path);
