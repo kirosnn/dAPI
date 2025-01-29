@@ -19,7 +19,7 @@ public class ListenerManager {
      * @param plugin Le plugin principal.
      */
     public static void registerAllListeners(Plugin plugin) {
-        Set<Class<?>> listenerClasses = new Reflections(plugin.getClass().getPackageName())
+        Set<Class<?>> listenerClasses = new Reflections(plugin.getClass().getPackage().getName())
                 .getTypesAnnotatedWith(AutoListener.class);
 
         for (Class<?> clazz : listenerClasses) {
