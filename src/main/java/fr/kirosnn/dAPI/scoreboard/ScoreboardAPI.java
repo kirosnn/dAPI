@@ -11,6 +11,9 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The type Scoreboard api.
+ */
 public class ScoreboardAPI {
 
     private final Map<Player, PlayerScoreboard> playerScoreboards = new HashMap<>();
@@ -45,6 +48,11 @@ public class ScoreboardAPI {
         scoreboard.update();
     }
 
+    /**
+     * Remove scoreboard.
+     *
+     * @param player the player
+     */
     public void removeScoreboard(Player player) {
         PlayerScoreboard scoreboard = playerScoreboards.remove(player);
         if (scoreboard != null) {

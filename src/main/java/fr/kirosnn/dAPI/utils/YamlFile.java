@@ -191,7 +191,7 @@ public class YamlFile {
     /**
      * Check if a file exists.
      *
-     * @return
+     * @return boolean
      */
     public boolean exists() {
         return file.exists() && configuration != null;

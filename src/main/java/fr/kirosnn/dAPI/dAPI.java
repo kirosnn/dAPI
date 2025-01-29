@@ -2,9 +2,6 @@ package fr.kirosnn.dAPI;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-/**
- * The type D api.
- */
 public final class dAPI extends JavaPlugin {
 
 /*
