@@ -1,51 +1,50 @@
 package fr.kirosnn.dAPI.listener;
 
-import fr.kirosnn.dAPI.utils.LoggerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
-import java.util.HashSet;
+import java.lang.reflect.Constructor;
 import java.util.Set;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
- * The type Listener manager.
+ * Gestionnaire automatique des listeners.
  */
 public class ListenerManager {
+
     /**
-     * Register all listeners.
+     * Enregistre tous les listeners annotés avec @AutoListener.
      *
-     * @param plugin        the plugin
-     * @param extraPackages the extra packages
+     * @param plugin Le plugin principal.
      */
-    public static void registerAllListeners(@NotNull Plugin plugin, String... extraPackages) {
-        Set<String> packagesToScan = new HashSet<>();
-        packagesToScan.add(plugin.getClass().getPackage().getName());
-        packagesToScan.addAll(Arrays.asList(extraPackages));
+    public static void registerAllListeners(Plugin plugin) {
+        Set<Class<?>> listenerClasses = new Reflections(plugin.getClass().getPackageName())
+                .getTypesAnnotatedWith(AutoListener.class);
 
-        for (String pkg : packagesToScan) {
-            Reflections reflections = new Reflections(pkg);
-            Set<Class<?>> listenerClasses = reflections.getTypesAnnotatedWith(AutoListener.class)
-                    .stream()
-                    .filter(Listener.class::isAssignableFrom)
-                    .collect(Collectors.toSet());
+        for (Class<?> clazz : listenerClasses) {
+            if (!Listener.class.isAssignableFrom(clazz)) continue;
 
-            for (Class<?> clazz : listenerClasses) {
-                try {
-                    Listener listener = (Listener) clazz.getDeclaredConstructor().newInstance();
-                    Bukkit.getPluginManager().registerEvents(listener, plugin);
-                } catch (ReflectiveOperationException e) {
-                    new LoggerUtils((JavaPlugin) plugin).infoPlugin("This error is from dAPI.");
-                    plugin.getLogger().severe("[dAPI] Failed to instantiate listener: " + clazz.getName());
-                } catch (Exception e) {
-                    plugin.getLogger().severe("[dAPI] Unexpected error while registering: " + clazz.getName());
-                }
+            try {
+                Listener listener = instantiateListener(clazz, plugin);
+                Bukkit.getPluginManager().registerEvents(listener, plugin);
+                plugin.getLogger().info("[dAPI] Listener enregistré: " + clazz.getSimpleName());
+            } catch (Exception e) {
+                plugin.getLogger().severe("[dAPI] Erreur en enregistrant: " + clazz.getName());
+                e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Instancie un listener en injectant le plugin si nécessaire.
+     */
+    private static Listener instantiateListener(Class<?> clazz, Plugin plugin) throws Exception {
+        for (Constructor<?> constructor : clazz.getConstructors()) {
+            if (constructor.getParameterCount() == 1 && constructor.getParameterTypes()[0].isAssignableFrom(plugin.getClass())) {
+                return (Listener) constructor.newInstance(plugin);
+            }
+        }
+        return (Listener) clazz.getDeclaredConstructor().newInstance();
     }
 }
