@@ -7,10 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * YAML file handler utility class.
@@ -109,7 +106,6 @@ public class YamlFile {
      * @param path Key path
      * @return List of elements or null if absent
      */
-    @SuppressWarnings("unchecked")
     public <T> List<T> getList(String path) {
         return (List<T>) configuration.getList(path);
     }
@@ -122,7 +118,6 @@ public class YamlFile {
      * @param defaultValue Default value if the key does not exist
      * @return List of elements or the default value
      */
-    @SuppressWarnings("unchecked")
     public <T> List<T> getList(String path, List<T> defaultValue) {
         List<T> list = (List<T>) configuration.getList(path);
         return (list != null) ? list : defaultValue;
@@ -137,7 +132,7 @@ public class YamlFile {
      */
     public Set<String> getKeys(String path, boolean deepMode) {
         return configuration.getConfigurationSection(path) != null
-                ? configuration.getConfigurationSection(path).getKeys(deepMode)
+                ? Objects.requireNonNull(configuration.getConfigurationSection(path)).getKeys(deepMode)
                 : Collections.emptySet();
     }
 

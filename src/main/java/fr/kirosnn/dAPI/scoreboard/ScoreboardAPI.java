@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class ScoreboardAPI {
      * @param title  the title
      * @param lines  the lines
      */
-    public void setScoreboard(Player player, String title, List<String> lines) {
+    public void setScoreboard(Player player, String title, @NotNull List<String> lines) {
         PlayerScoreboard scoreboard = playerScoreboards.computeIfAbsent(player, PlayerScoreboard::new);
         scoreboard.setTitle(title);
 
@@ -76,7 +77,7 @@ public class ScoreboardAPI {
      * @param lines    the lines
      */
     public void startAutoUpdate(int interval, String title, List<String> lines) {
-        stopAutoUpdate(); // Stoppe toute tâche précédente
+        stopAutoUpdate();
         updateTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 setScoreboard(player, title, lines);
@@ -96,7 +97,6 @@ public class ScoreboardAPI {
 
     private static class PlayerScoreboard {
 
-        private final Player player;
         private final Scoreboard scoreboard;
         private final Objective objective;
         private final List<String> lines;
@@ -107,8 +107,7 @@ public class ScoreboardAPI {
          * @param player the player
          */
         public PlayerScoreboard(Player player) {
-            this.player = player;
-            this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            this.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
             this.objective = scoreboard.registerNewObjective("main", "dummy", ChatColor.RESET + "");
             this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
             this.lines = new ArrayList<>();

@@ -2,6 +2,7 @@ package fr.kirosnn.dAPI.minecraft;
 
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,10 +21,12 @@ public class TeleportUtils {
      * @param postTeleportMsg Message after teleportation (null to disable)
      * @param soundEffect     Sound to play after teleporting (null to disable)
      * @param particleEffect  Particle effect to display before teleporting (null to disable)
+     * @param plugin          The main plugin instance
      */
     public static void teleport(Player player, Location location, int cooldown,
                                 String preTeleportMsg, String postTeleportMsg,
-                                Sound soundEffect, Particle particleEffect) {
+                                Sound soundEffect, Particle particleEffect,
+                                JavaPlugin plugin) {
         if (player == null || location == null) return;
 
         if (preTeleportMsg != null) {
@@ -40,7 +43,7 @@ public class TeleportUtils {
                 public void run() {
                     performTeleport(player, location, postTeleportMsg, soundEffect);
                 }
-            }.runTaskLater(Bukkit.getPluginManager().getPlugin("YourPluginName"), cooldown * 20L);
+            }.runTaskLater(plugin, cooldown * 20L);
         } else {
             performTeleport(player, location, postTeleportMsg, soundEffect);
         }
