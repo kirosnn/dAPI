@@ -19,24 +19,24 @@ public class BlockData {
         this.material = block.getType();
     }
 
-    public JsonObject toJson() {
+    public JsonObject toJson(int materialIndex) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("x", x);
         jsonObject.addProperty("y", y);
         jsonObject.addProperty("z", z);
-        jsonObject.addProperty("material", material.name());
+        jsonObject.addProperty("i", materialIndex);
         return jsonObject;
     }
 
-    public static @NotNull BlockData fromJson(@NotNull JsonObject jsonObject) {
+    public static @NotNull BlockData fromJson(@NotNull JsonObject jsonObject, Material @NotNull [] materials) {
         int x = jsonObject.get("x").getAsInt();
         int y = jsonObject.get("y").getAsInt();
         int z = jsonObject.get("z").getAsInt();
-        Material material = Material.valueOf(jsonObject.get("material").getAsString());
+        Material material = materials[jsonObject.get("i").getAsInt()];
         return new BlockData(x, y, z, material);
     }
 
-    public Block paste(@NotNull Location targetLocation, boolean applyPhysics) {
+    public void paste(@NotNull Location targetLocation, boolean applyPhysics) {
         World world = targetLocation.getWorld();
         Block block = Objects.requireNonNull(world).getBlockAt(
                 targetLocation.getBlockX() + x,
@@ -44,7 +44,6 @@ public class BlockData {
                 targetLocation.getBlockZ() + z
         );
         block.setType(material, applyPhysics);
-        return block;
     }
 
     private BlockData(int x, int y, int z, Material material) {
@@ -52,5 +51,9 @@ public class BlockData {
         this.y = y;
         this.z = z;
         this.material = material;
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 }

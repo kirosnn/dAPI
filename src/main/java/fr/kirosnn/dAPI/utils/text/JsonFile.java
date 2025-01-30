@@ -155,6 +155,25 @@ public class JsonFile {
     }
 
     /**
+     * Sets the entire JSON object in the file.
+     *
+     * @param jsonObject The new JsonObject to store
+     */
+    public void setJsonObject(@NotNull JsonObject jsonObject) {
+        this.jsonData = jsonObject;
+        save();
+    }
+
+    /**
+     * Retrieves the entire JSON object stored in the file.
+     *
+     * @return The JsonObject containing all the data, or an empty object if the file is empty
+     */
+    public @NotNull JsonObject getJsonObject() {
+        return (jsonData != null) ? jsonData : new JsonObject();
+    }
+
+    /**
      * Checks if the file exists.
      *
      * @return True if the file exists and is valid, otherwise False
