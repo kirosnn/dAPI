@@ -1,4 +1,4 @@
-package fr.kirosnn.dAPI.utils;
+package fr.kirosnn.dAPI.utils.text;
 
 import com.google.gson.*;
 import org.bukkit.plugin.java.JavaPlugin;

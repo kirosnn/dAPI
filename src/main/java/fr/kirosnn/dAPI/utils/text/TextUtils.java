@@ -1,4 +1,4 @@
-package fr.kirosnn.dAPI.utils;
+package fr.kirosnn.dAPI.utils.text;
 
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;

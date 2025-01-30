@@ -1,8 +1,5 @@
-package fr.kirosnn.dAPI.utils;
+package fr.kirosnn.dAPI.utils.text;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -87,22 +84,22 @@ public class YamlFile {
      */
     public String getTranslated(String path, String defaultValue, Map<String, String> placeholders) {
         String value = get(path, defaultValue);
-        if (value == null) return defaultValue;
 
-        if (placeholders != null) {
-            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-                value = value.replace(entry.getKey(), entry.getValue());
-            }
+        if (value == null) {
+            return defaultValue;
         }
 
         value = value.replace("&", "§");
-        MiniMessage miniMessage = MiniMessage.miniMessage();
 
-        return PlainTextComponentSerializer.plainText().serialize(
-                LegacyComponentSerializer.legacySection().deserialize(
-                        String.valueOf(miniMessage.deserialize(value))
-                )
-        );
+        if (placeholders == null) {
+            placeholders = Collections.emptyMap();
+        }
+
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            value = value.replace(entry.getKey(), entry.getValue());
+        }
+
+        return value;
     }
 
     /**
