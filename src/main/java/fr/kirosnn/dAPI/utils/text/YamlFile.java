@@ -1,5 +1,6 @@
 package fr.kirosnn.dAPI.utils.text;
 
+import fr.kirosnn.dAPI.utils.text.simpletext.SimpleTextParser;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -86,17 +87,11 @@ public class YamlFile {
             return defaultValue;
         }
 
-        value = value.replace("&", "§");
-
         if (placeholders == null) {
             placeholders = Collections.emptyMap();
         }
 
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            value = value.replace(entry.getKey(), entry.getValue());
-        }
-
-        return value;
+        return SimpleTextParser.parse(value);
     }
 
     /**
