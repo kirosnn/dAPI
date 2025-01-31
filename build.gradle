@@ -4,8 +4,10 @@ plugins {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
+
 
 group = 'fr.kirosnn'
 version = '0.0.1'
