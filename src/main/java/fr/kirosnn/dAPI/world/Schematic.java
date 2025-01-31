@@ -55,7 +55,14 @@ public class Schematic {
     /**
      * Save the schematic to a JSON file
      */
-    public boolean save(String filePath) {
+    public boolean save(@NotNull JavaPlugin plugin, String fileName) {
+        File folder = new File(plugin.getDataFolder(), "schematics");
+        if (!folder.exists() && !folder.mkdirs()) {
+            plugin.getLogger().severe("Impossible de créer le dossier des schématiques.");
+            return false;
+        }
+
+        File file = new File(folder, fileName + ".json");
         JsonObject schematicJson = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         Set<Material> materialSet = new HashSet<>();
@@ -80,12 +87,13 @@ public class Schematic {
         originJson.addProperty("x", origin.getBlockX());
         originJson.addProperty("y", origin.getBlockY());
         originJson.addProperty("z", origin.getBlockZ());
+        originJson.addProperty("world", origin.getWorld().getName());
 
         schematicJson.add("materials", materialArray);
         schematicJson.add("blocks", jsonArray);
         schematicJson.add("origin", originJson);
 
-        JsonFile jsonFile = new JsonFile((JavaPlugin) null, "", new File(filePath).getName());
+        JsonFile jsonFile = new JsonFile(plugin, "schematics", fileName + ".json");
         jsonFile.setJsonObject(schematicJson);
         jsonFile.save();
         return true;
@@ -94,13 +102,16 @@ public class Schematic {
     /**
      * Load a schematic synchronously
      */
-    public static @NotNull Schematic load(String filePath) {
-        JsonFile jsonFile = new JsonFile((JavaPlugin) null, "", new File(filePath).getName());
+    public static @NotNull Schematic load(JavaPlugin plugin, String fileName) {
+        JsonFile jsonFile = new JsonFile(plugin, "schematics", fileName + ".json");
         JsonObject schematicJson = jsonFile.getJsonObject();
 
         JsonArray materialsArray = schematicJson.getAsJsonArray("materials");
         JsonArray blocksArray = schematicJson.getAsJsonArray("blocks");
         JsonObject originJson = schematicJson.getAsJsonObject("origin");
+
+        World world = Bukkit.getWorld(originJson.get("world").getAsString()); // ✅ Correction
+        if (world == null) throw new IllegalStateException("Le monde spécifié n'existe pas !");
 
         Material[] materials = new Material[materialsArray.size()];
         for (int i = 0; i < materialsArray.size(); i++) {
@@ -112,20 +123,24 @@ public class Schematic {
             blockDataList.add(BlockData.fromJson(blocksArray.get(i).getAsJsonObject(), materials));
         }
 
-        Location origin = new Location(null, originJson.get("x").getAsInt(), originJson.get("y").getAsInt(), originJson.get("z").getAsInt());
+        Location origin = new Location(world, originJson.get("x").getAsInt(), originJson.get("y").getAsInt(), originJson.get("z").getAsInt());
 
         return new Schematic(blockDataList, origin);
     }
 
     /**
-     * Paste blocks from the schematic
+     * Paste blocks from the schematic asynchronously to avoid server lag
      */
     public void paste(@NotNull Location targetLocation, boolean applyPhysics) {
         World world = targetLocation.getWorld();
+        JavaPlugin plugin = JavaPlugin.getProvidingPlugin(getClass());
 
-        Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () -> {
-            for (BlockData blockData : blockDataList) {
-                blockData.paste(targetLocation, applyPhysics);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            for (int i = 0; i < blockDataList.size(); i++) {
+                final BlockData blockData = blockDataList.get(i);
+                final int delay = i / 100;
+
+                Bukkit.getScheduler().runTaskLater(plugin, () -> blockData.paste(targetLocation, applyPhysics), delay);
             }
         });
     }

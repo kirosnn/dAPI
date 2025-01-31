@@ -3,6 +3,7 @@ package fr.kirosnn.dAPI.utils.text;
 import com.google.gson.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -27,6 +28,9 @@ public class JsonFile {
      * @param fileName   JSON file name (e.g., "data.json")
      */
     public JsonFile(@NotNull JavaPlugin plugin, String folderPath, String fileName) {
+        if (plugin == null) {
+            throw new IllegalArgumentException("Le plugin ne peut pas être null !");
+        }
         this.plugin = plugin;
         this.fileName = fileName;
         this.gson = new GsonBuilder().setPrettyPrinting().create();
@@ -35,9 +39,8 @@ public class JsonFile {
                 ? plugin.getDataFolder()
                 : new File(plugin.getDataFolder(), folderPath);
 
-        if (!targetFolder.exists()) {
-            targetFolder.mkdirs();
-            plugin.getLogger().info("The folder " + targetFolder.getPath() + " has been created.");
+        if (!targetFolder.exists() && targetFolder.mkdirs()) {
+            plugin.getLogger().info("Dossier créé : " + targetFolder.getPath());
         }
 
         this.file = new File(targetFolder, fileName);
@@ -57,10 +60,10 @@ public class JsonFile {
             if (file.createNewFile()) {
                 jsonData = new JsonObject();
                 save();
-                plugin.getLogger().info("The file " + fileName + " has been created.");
+                plugin.getLogger().info("Fichier créé : " + fileName);
             }
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to create the file " + fileName + ": " + e.getMessage());
+            plugin.getLogger().severe("Échec de la création du fichier " + fileName + ": " + e.getMessage());
         }
     }
 
@@ -74,7 +77,7 @@ public class JsonFile {
                 jsonData = new JsonObject();
             }
         } catch (Exception e) {
-            plugin.getLogger().severe("Failed to load the file " + fileName + ": " + e.getMessage());
+            plugin.getLogger().severe("Erreur lors du chargement de " + fileName + ": " + e.getMessage());
             jsonData = new JsonObject();
         }
     }
@@ -86,7 +89,7 @@ public class JsonFile {
         try (Writer writer = new FileWriter(file)) {
             gson.toJson(jsonData, writer);
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to save the file " + fileName + ": " + e.getMessage());
+            plugin.getLogger().severe("Erreur lors de la sauvegarde de " + fileName + ": " + e.getMessage());
         }
     }
 
@@ -99,7 +102,7 @@ public class JsonFile {
      * @return Value associated with the key or null if absent
      */
     public <T> T get(String path, Class<T> type) {
-        JsonElement element = jsonData.get(path);
+        JsonElement element = getElement(path);
         return (element != null) ? gson.fromJson(element, type) : null;
     }
 
@@ -112,7 +115,7 @@ public class JsonFile {
      * @return List of elements or an empty list if absent
      */
     public <T> List<T> getList(String path, Type type) {
-        JsonElement element = jsonData.get(path);
+        JsonElement element = getElement(path);
         return (element != null) ? gson.fromJson(element, type) : new ArrayList<>();
     }
 
@@ -122,8 +125,20 @@ public class JsonFile {
      * @param path  Key path
      * @param value Value to set
      */
-    public void set(String path, Object value) {
-        jsonData.add(path, gson.toJsonTree(value));
+    public void set(@NotNull String path, Object value) {
+        String[] keys = path.split("\\.");
+        JsonObject obj = jsonData;
+
+        for (int i = 0; i < keys.length - 1; i++) {
+            obj = obj.getAsJsonObject(keys[i]);
+            if (obj == null) {
+                obj = new JsonObject();
+                jsonData.add(keys[i], obj);
+            }
+        }
+
+        obj.add(keys[keys.length - 1], gson.toJsonTree(value));
+        save();
     }
 
     /**
@@ -131,8 +146,17 @@ public class JsonFile {
      *
      * @param path Key path
      */
-    public void remove(String path) {
-        jsonData.remove(path);
+    public void remove(@NotNull String path) {
+        String[] keys = path.split("\\.");
+        JsonObject obj = jsonData;
+
+        for (int i = 0; i < keys.length - 1; i++) {
+            obj = obj.getAsJsonObject(keys[i]);
+            if (obj == null) return;
+        }
+
+        obj.remove(keys[keys.length - 1]);
+        save();
     }
 
     /**
@@ -142,7 +166,7 @@ public class JsonFile {
      * @return True if the key exists, otherwise False
      */
     public boolean contains(String path) {
-        return jsonData.has(path);
+        return getElement(path) != null;
     }
 
     /**
@@ -180,5 +204,24 @@ public class JsonFile {
      */
     public boolean exists() {
         return file.exists() && jsonData != null;
+    }
+
+    /**
+     * Retrieves a nested JSON element based on a dot-separated path.
+     *
+     * @param path The key path
+     * @return JsonElement or null if not found
+     */
+    private @Nullable JsonElement getElement(@NotNull String path) {
+        String[] keys = path.split("\\.");
+        JsonObject obj = jsonData;
+        JsonElement element = null;
+
+        for (String key : keys) {
+            element = obj.get(key);
+            if (element == null) return null;
+            if (element.isJsonObject()) obj = element.getAsJsonObject();
+        }
+        return element;
     }
 }
