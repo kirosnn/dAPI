@@ -678,42 +678,22 @@ public final class Schematic {
         return Collections.unmodifiableMap(waypoints);
     }
 
-    /**
-     * @deprecated Use {@link #getDataVersion()} instead.
-     */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public int dataVersion() {
         return dataVersion;
     }
 
-    /**
-     * @deprecated Use {@link #getDataVersion()} instead.
-     */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public String minecraftVersion() {
         return minecraftVersion;
     }
 
-    /**
-     * @deprecated Use {@link #getDimensions()} instead.
-     */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public Vector dimensions() {
         return dimensions;
     }
 
-    /**
-     * @deprecated Use {@link #getPalette()} instead.
-     */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public List<BlockData> palette() {
         return palette;
     }
 
-    /**
-     * @deprecated Use {@link #getBlocks()} instead.
-     */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public List<Short> blocks() {
         return blocks;
     }
