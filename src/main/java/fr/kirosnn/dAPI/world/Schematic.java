@@ -142,11 +142,11 @@ public final class Schematic {
                 .map(entry -> {
                     String name = entry.getKey();
                     List<Location> locations = entry.getValue();
-                    return Map.entry(name, locations.stream()
+                    return new AbstractMap.SimpleEntry<>(name, locations.stream()
                             .map(location -> location.clone().subtract(min.getLocation()))
-                            .collect(Collectors.toList()))
-                ;})
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                            .collect(Collectors.toList()));
+                })
+                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
 
         return new Schematic(DATA_VERSION, Bukkit.getBukkitVersion().split("-")[0],
                 data.dimensions, data.palette, data.blocks, offsetWaypoints);
