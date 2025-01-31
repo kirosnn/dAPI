@@ -2,33 +2,54 @@ package fr.kirosnn.dAPI.utils.text.simpletext;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Matcher;
+
 public class SimpleTextParser {
 
     public static @NotNull String parse(@NotNull String input) {
         if (input.isEmpty()) return "";
 
-        String parsedText = Patterns.TAG_PATTERN.matcher(input).replaceAll(match ->
-                ColorUtils.COLOR_MAP.getOrDefault(match.group(1).toLowerCase(), "")
-        );
+        StringBuffer buffer = new StringBuffer();
 
-        parsedText = Patterns.GRADIENT_PATTERN.matcher(parsedText).replaceAll(match ->
-                Effects.applyGradientEffect(match.group(1), match.group(2), match.group(3))
-        );
+        Matcher matcher = Patterns.TAG_PATTERN.matcher(input);
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, ColorUtils.COLOR_MAP.getOrDefault(matcher.group(1).toLowerCase(), ""));
+        }
+        matcher.appendTail(buffer);
+        String parsedText = buffer.toString();
 
-        parsedText = Patterns.RAINBOW_PATTERN.matcher(parsedText).replaceAll(match ->
-                Effects.applyRainbowEffect(match.group(1))
-        );
+        buffer.setLength(0);
+        matcher = Patterns.GRADIENT_PATTERN.matcher(parsedText);
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, Effects.applyGradientEffect(matcher.group(1), matcher.group(2), matcher.group(3)));
+        }
+        matcher.appendTail(buffer);
+        parsedText = buffer.toString();
 
-        parsedText = Patterns.HEX_PATTERN.matcher(parsedText).replaceAll(match ->
-                ColorUtils.convertHexToBukkit(match.group(1))
-        );
+        buffer.setLength(0);
+        matcher = Patterns.RAINBOW_PATTERN.matcher(parsedText);
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, Effects.applyRainbowEffect(matcher.group(1)));
+        }
+        matcher.appendTail(buffer);
+        parsedText = buffer.toString();
 
-        parsedText = Patterns.MULTI_GRADIENT_PATTERN.matcher(parsedText).replaceAll(match ->
-                Effects.applyMultiGradientEffect(match.group(1), match.group(2))
-        );
+        buffer.setLength(0);
+        matcher = Patterns.HEX_PATTERN.matcher(parsedText);
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, ColorUtils.convertHexToBukkit(matcher.group(1)));
+        }
+        matcher.appendTail(buffer);
+        parsedText = buffer.toString();
 
-        parsedText = Patterns.CLOSE_TAG_PATTERN.matcher(parsedText).replaceAll("§r");
+        buffer.setLength(0);
+        matcher = Patterns.MULTI_GRADIENT_PATTERN.matcher(parsedText);
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, Effects.applyMultiGradientEffect(matcher.group(1), matcher.group(2)));
+        }
+        matcher.appendTail(buffer);
+        parsedText = buffer.toString();
 
-        return parsedText.replace("&", "§");
+        return parsedText.replace("&", "§").replaceAll(Patterns.CLOSE_TAG_PATTERN.pattern(), "§r");
     }
 }
