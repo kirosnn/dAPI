@@ -27,6 +27,11 @@ dependencies {
     compileOnly("org.jetbrains:annotations:26.0.1")
 }
 
+tasks.withType(Jar).configureEach {
+    archiveBaseName.set("dapi")
+    archiveVersion.set(version)
+}
+
 tasks.withType(JavaCompile).all {
     options.encoding = 'UTF-8'
 }
@@ -51,7 +56,8 @@ publishing {
             from components.java
             groupId = 'fr.kirosnn'
             artifactId = 'dAPI'
-            version = '0.0.1'
+            version = project.version
+            artifact(tasks.named("jar"))
         }
     }
 }
