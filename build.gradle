@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group = 'fr.kirosnn'
@@ -41,3 +42,15 @@ processResources {
         expand props
     }
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId = 'fr.kirosnn'
+            artifactId = 'dAPI'
+            version = '0.0.1'
+        }
+    }
+}
+
