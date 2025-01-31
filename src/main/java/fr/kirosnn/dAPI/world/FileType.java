@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 
 /**
- * The interface File type.
+ * The interface File type
  */
 public interface FileType {
 
