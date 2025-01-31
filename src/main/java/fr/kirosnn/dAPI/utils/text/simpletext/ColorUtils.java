@@ -1,5 +1,7 @@
 package fr.kirosnn.dAPI.utils.text.simpletext;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,5 +30,13 @@ public class ColorUtils {
         map.put("light_purple", "§d");
         map.put("dark_yellow", "§6");
         COLOR_MAP = Collections.unmodifiableMap(map);
+    }
+
+    public static @NotNull String convertHexToBukkit(@NotNull String hex) {
+        StringBuilder result = new StringBuilder("§x");
+        for (char c : hex.toCharArray()) {
+            result.append("§").append(c);
+        }
+        return result.toString();
     }
 }
