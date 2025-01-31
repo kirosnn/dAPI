@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -301,7 +302,7 @@ public final class Schematic {
      * or null if reading fails or if the file doesn't exist.
      * @throws IllegalArgumentException If file does not exist or is null.
      */
-    public static CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull FileType type, @NotNull Plugin plugin) {
+    public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull FileType type, @NotNull Plugin plugin) {
         var future = new CompletableFuture<Schematic>();
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> future.complete(load(file, type)));
@@ -319,7 +320,7 @@ public final class Schematic {
      * or null if reading fails or if the file doesn't exist.
      * @throws IllegalArgumentException If file does not exist or is null.
      */
-    public static CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull FileType type, @NotNull Plugin plugin) {
+    public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull FileType type, @NotNull Plugin plugin) {
         return loadAsync(new File(file), type, plugin);
     }
 
@@ -332,7 +333,7 @@ public final class Schematic {
      * or null if reading fails or if the file doesn't exist.
      * @throws IllegalArgumentException If file does not exist or is null.
      */
-    public static CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull Plugin plugin) {
+    public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull Plugin plugin) {
         return loadAsync(file, new JsonSchematic(), plugin);
     }
 
@@ -345,11 +346,12 @@ public final class Schematic {
      * or null if reading fails or if the file doesn't exist.
      * @throws IllegalArgumentException If file does not exist or is null.
      */
-    public static CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull Plugin plugin) {
+    public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull Plugin plugin) {
         return loadAsync(new File(file), plugin);
     }
 
-    private static BlocksData getBlocks(Block pos1, Block pos2, @NotNull World world) {
+    @Contract("_, _, _ -> new")
+    private static @NotNull BlocksData getBlocks(Block pos1, Block pos2, @NotNull World world) {
         Preconditions.checkNotNull(pos1, "First position is null");
         Preconditions.checkNotNull(pos2, "Second position is null");
 
@@ -374,7 +376,7 @@ public final class Schematic {
                     var type = block.getBlockData();
 
                     var size = paletteMap.size();
-                    if (!paletteMap.containsKey(type)) { // ensure O(n)
+                    if (!paletteMap.containsKey(type)) {
                         paletteMap.put(type, (short) size);
                     }
 
@@ -505,7 +507,7 @@ public final class Schematic {
      * @param location The location to paste the schematic at.
      * @return A list of all blocks which have been altered.
      */
-    public List<Block> paste(@NotNull Location location, boolean skipAir) {
+    public @NotNull List<Block> paste(@NotNull Location location, boolean skipAir) {
         return paste(location.getBlock(), skipAir);
     }
 
@@ -515,7 +517,7 @@ public final class Schematic {
      * @param block The block to paste the schematic at.
      * @return A list of all blocks which have been altered.
      */
-    public List<Block> paste(@NotNull Block block, boolean skipAir) {
+    public @NotNull List<Block> paste(@NotNull Block block, boolean skipAir) {
         Preconditions.checkNotNull(block, "Block is null");
 
         var pos = block.getLocation();
@@ -551,8 +553,8 @@ public final class Schematic {
         return bs;
     }
 
-    // rounds vector to lowest ints
-    private static Vector round(Vector vector) {
+    @Contract("_ -> new")
+    private static @NotNull Vector round(@NotNull Vector vector) {
         return new Vector(Math.floor(vector.getX()), Math.floor(vector.getY()), Math.floor(vector.getZ()));
     }
 
@@ -681,7 +683,6 @@ public final class Schematic {
     /**
      * @deprecated Use {@link #getDataVersion()} instead.
      */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public int dataVersion() {
         return dataVersion;
     }
@@ -689,7 +690,6 @@ public final class Schematic {
     /**
      * @deprecated Use {@link #getDataVersion()} instead.
      */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public String minecraftVersion() {
         return minecraftVersion;
     }
@@ -697,7 +697,6 @@ public final class Schematic {
     /**
      * @deprecated Use {@link #getDimensions()} instead.
      */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public Vector dimensions() {
         return dimensions;
     }
@@ -705,7 +704,6 @@ public final class Schematic {
     /**
      * @deprecated Use {@link #getPalette()} instead.
      */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public List<BlockData> palette() {
         return palette;
     }
@@ -713,7 +711,6 @@ public final class Schematic {
     /**
      * @deprecated Use {@link #getBlocks()} instead.
      */
-    @Deprecated(forRemoval = true, since = "1.1.0")
     public List<Short> blocks() {
         return blocks;
     }
