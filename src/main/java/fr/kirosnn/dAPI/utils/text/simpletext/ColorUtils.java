@@ -1,32 +1,32 @@
 package fr.kirosnn.dAPI.utils.text.simpletext;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.AbstractMap;
-
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ColorUtils {
 
-    public static final Map<String, String> COLOR_MAP = Map.ofEntries(
-            new AbstractMap.SimpleEntry<>("black", "§0"), new AbstractMap.SimpleEntry<>("dark_blue", "§1"),
-            new AbstractMap.SimpleEntry<>("dark_green", "§2"), new AbstractMap.SimpleEntry<>("dark_aqua", "§3"),
-            new AbstractMap.SimpleEntry<>("dark_red", "§4"), new AbstractMap.SimpleEntry<>("dark_purple", "§5"),
-            new AbstractMap.SimpleEntry<>("gold", "§6"), new AbstractMap.SimpleEntry<>("gray", "§7"),
-            new AbstractMap.SimpleEntry<>("dark_gray", "§8"), new AbstractMap.SimpleEntry<>("blue", "§9"),
-            new AbstractMap.SimpleEntry<>("green", "§a"), new AbstractMap.SimpleEntry<>("aqua", "§b"),
-            new AbstractMap.SimpleEntry<>("red", "§c"), new AbstractMap.SimpleEntry<>("light_purple", "§d"),
-            new AbstractMap.SimpleEntry<>("yellow", "§e"), new AbstractMap.SimpleEntry<>("white", "§f"),
-            new AbstractMap.SimpleEntry<>("bold", "§l"), new AbstractMap.SimpleEntry<>("italic", "§o"),
-            new AbstractMap.SimpleEntry<>("underline", "§n"), new AbstractMap.SimpleEntry<>("strikethrough", "§m"),
-            new AbstractMap.SimpleEntry<>("obfuscated", "§k"), new AbstractMap.SimpleEntry<>("reset", "§r")
-    );
+    public static final Map<String, String> COLOR_MAP;
 
-    public static @NotNull String convertHexToBukkit(@NotNull String hex) {
-        StringBuilder result = new StringBuilder("§x");
-        for (char c : hex.toCharArray()) {
-            result.append("§").append(c);
-        }
-        return result.toString();
+    static {
+        Map<String, String> map = new HashMap<>();
+        map.put("red", "§c");
+        map.put("green", "§a");
+        map.put("blue", "§9");
+        map.put("yellow", "§e");
+        map.put("gold", "§6");
+        map.put("aqua", "§b");
+        map.put("white", "§f");
+        map.put("black", "§0");
+        map.put("gray", "§7");
+        map.put("dark_gray", "§8");
+        map.put("dark_red", "§4");
+        map.put("dark_green", "§2");
+        map.put("dark_blue", "§1");
+        map.put("dark_aqua", "§3");
+        map.put("dark_purple", "§5");
+        map.put("light_purple", "§d");
+        map.put("dark_yellow", "§6");
+        COLOR_MAP = Collections.unmodifiableMap(map);
     }
 }
