@@ -726,7 +726,27 @@ public final class Schematic {
                 "blocks=" + blocks + ']';
     }
 
-    private record BlocksData(Vector dimensions, List<BlockData> palette, List<Short> blocks) {
+    public static class BlocksData {
+        private final Vector dimensions;
+        private final List<BlockData> palette;
+        private final List<Short> blocks;
 
+        public BlocksData(Vector dimensions, List<BlockData> palette, List<Short> blocks) {
+            this.dimensions = dimensions;
+            this.palette = palette;
+            this.blocks = blocks;
+        }
+
+        public Vector getDimensions() {
+            return dimensions;
+        }
+
+        public List<BlockData> getPalette() {
+            return palette;
+        }
+
+        public List<Short> getBlocks() {
+            return blocks;
+        }
     }
 }
