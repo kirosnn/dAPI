@@ -144,8 +144,8 @@ public final class Schematic {
                     List<Location> locations = entry.getValue();
                     return Map.entry(name, locations.stream()
                             .map(location -> location.clone().subtract(min.getLocation()))
-                            .toList());
-                })
+                            .collect(Collectors.toList()))
+                ;})
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return new Schematic(DATA_VERSION, Bukkit.getBukkitVersion().split("-")[0],
@@ -458,7 +458,7 @@ public final class Schematic {
      */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull File file, @NotNull FileType type, @NotNull Plugin plugin) {
-        var future = new CompletableFuture<Boolean>();
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> future.complete(save(file, type)));
 
@@ -597,7 +597,7 @@ public final class Schematic {
                     added.setWorld(pastedAt.getWorld());
                     return added.add(pastedAt.getLocation());
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 
     /**
@@ -708,7 +708,7 @@ public final class Schematic {
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (Schematic) obj;
+        Schematic that = (Schematic) obj;
 
         return this.dataVersion == that.dataVersion &&
                 Objects.equals(this.minecraftVersion, that.minecraftVersion) &&
