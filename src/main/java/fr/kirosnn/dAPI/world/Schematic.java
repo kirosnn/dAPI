@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -89,7 +90,7 @@ public final class Schematic {
     public static Schematic create(@NotNull Block pos1, @NotNull Block pos2) {
         Preconditions.checkArgument(pos1.getWorld() == pos2.getWorld(), "Blocks must be in the same world");
 
-        var data = getBlocks(pos1, pos2, pos1.getWorld());
+        BlocksData data = getBlocks(pos1, pos2, pos1.getWorld());
 
         return new Schematic(DATA_VERSION, Bukkit.getBukkitVersion().split("-")[0],
                 data.dimensions, data.palette, data.blocks);
@@ -130,17 +131,17 @@ public final class Schematic {
             @NotNull Block pos2,
             @NotNull Map<String, List<Location>> waypoints
     ) {
-        var world = pos1.getWorld();
+        World world = pos1.getWorld();
 
-        var data = getBlocks(pos1, pos2, world);
-        var min = Vector.getMinimum(pos1.getLocation().toVector(), pos2.getLocation().toVector())
+        BlocksData data = getBlocks(pos1, pos2, world);
+        Block min = Vector.getMinimum(pos1.getLocation().toVector(), pos2.getLocation().toVector())
                 .toLocation(world)
                 .getBlock();
 
-        var offsetWaypoints = waypoints.entrySet().stream()
+        Map<String, List<Location>> offsetWaypoints = waypoints.entrySet().stream()
                 .map(entry -> {
-                    var name = entry.getKey();
-                    var locations = entry.getValue();
+                    String name = entry.getKey();
+                    List<Location> locations = entry.getValue();
                     return Map.entry(name, locations.stream()
                             .map(location -> location.clone().subtract(min.getLocation()))
                             .toList());
@@ -166,7 +167,7 @@ public final class Schematic {
             @NotNull Location pos2,
             @NotNull Plugin plugin
     ) {
-        var future = new CompletableFuture<Schematic>();
+        CompletableFuture<Schematic> future = new CompletableFuture<>();
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> future.complete(create(pos1, pos2)));
 
@@ -208,7 +209,7 @@ public final class Schematic {
             @NotNull Map<String, List<Location>> waypoints,
             @NotNull Plugin plugin
     ) {
-        var future = new CompletableFuture<Schematic>();
+        CompletableFuture<Schematic> future = new CompletableFuture<>();
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> future.complete(create(pos1, pos2, waypoints)));
 
@@ -301,8 +302,12 @@ public final class Schematic {
      * or null if reading fails or if the file doesn't exist.
      * @throws IllegalArgumentException If file does not exist or is null.
      */
-    public static CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull FileType type, @NotNull Plugin plugin) {
-        var future = new CompletableFuture<Schematic>();
+    public static @NotNull CompletableFuture<Schematic> loadAsync(
+            @NotNull File file,
+            @NotNull FileType type,
+            @NotNull Plugin plugin
+    ) {
+        CompletableFuture<Schematic> future = new CompletableFuture<>();
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> future.complete(load(file, type)));
 
@@ -319,7 +324,7 @@ public final class Schematic {
      * or null if reading fails or if the file doesn't exist.
      * @throws IllegalArgumentException If file does not exist or is null.
      */
-    public static CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull FileType type, @NotNull Plugin plugin) {
+    public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull FileType type, @NotNull Plugin plugin) {
         return loadAsync(new File(file), type, plugin);
     }
 
@@ -332,7 +337,7 @@ public final class Schematic {
      * or null if reading fails or if the file doesn't exist.
      * @throws IllegalArgumentException If file does not exist or is null.
      */
-    public static CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull Plugin plugin) {
+    public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull Plugin plugin) {
         return loadAsync(file, new JsonSchematic(), plugin);
     }
 
@@ -345,22 +350,23 @@ public final class Schematic {
      * or null if reading fails or if the file doesn't exist.
      * @throws IllegalArgumentException If file does not exist or is null.
      */
-    public static CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull Plugin plugin) {
+    public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull Plugin plugin) {
         return loadAsync(new File(file), plugin);
     }
 
-    private static BlocksData getBlocks(Block pos1, Block pos2, @NotNull World world) {
+    @Contract("_, _, _ -> new")
+    private static @NotNull BlocksData getBlocks(Block pos1, Block pos2, @NotNull World world) {
         Preconditions.checkNotNull(pos1, "First position is null");
         Preconditions.checkNotNull(pos2, "Second position is null");
 
-        var min = round(Vector.getMinimum(pos1.getLocation().toVector(), pos2.getLocation().toVector()));
-        var max = round(Vector.getMaximum(pos1.getLocation().toVector(), pos2.getLocation().toVector()));
-        var dimensions = max.clone().subtract(min);
+        Vector min = round(Vector.getMinimum(pos1.getLocation().toVector(), pos2.getLocation().toVector()));
+        Vector max = round(Vector.getMaximum(pos1.getLocation().toVector(), pos2.getLocation().toVector()));
+        Vector dimensions = max.clone().subtract(min);
 
-        var paletteMap = new LinkedHashMap<BlockData, Short>();
-        var blocks = new LinkedList<Short>();
+        LinkedHashMap<BlockData, Short> paletteMap = new LinkedHashMap<>();
+        LinkedList<Short> blocks = new LinkedList<>();
 
-        var pos = min.clone().toLocation(world);
+        Location pos = min.clone().toLocation(world);
         for (int x = min.getBlockX(); x <= max.getBlockX(); x++) {
             pos.setX(x);
 
@@ -370,11 +376,11 @@ public final class Schematic {
                 for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
                     pos.setZ(z);
 
-                    var block = pos.getBlock();
-                    var type = block.getBlockData();
+                    Block block = pos.getBlock();
+                    BlockData type = block.getBlockData();
 
-                    var size = paletteMap.size();
-                    if (!paletteMap.containsKey(type)) { // ensure O(n)
+                    int size = paletteMap.size();
+                    if (!paletteMap.containsKey(type)) {
                         paletteMap.put(type, (short) size);
                     }
 
@@ -383,7 +389,7 @@ public final class Schematic {
             }
         }
 
-        var palette = new ArrayList<>(paletteMap.keySet());
+        ArrayList<BlockData> palette = new ArrayList<>(paletteMap.keySet());
 
         return new BlocksData(dimensions, palette, blocks);
     }
@@ -505,7 +511,7 @@ public final class Schematic {
      * @param location The location to paste the schematic at.
      * @return A list of all blocks which have been altered.
      */
-    public List<Block> paste(@NotNull Location location, boolean skipAir) {
+    public @NotNull List<Block> paste(@NotNull Location location, boolean skipAir) {
         return paste(location.getBlock(), skipAir);
     }
 
@@ -515,14 +521,14 @@ public final class Schematic {
      * @param block The block to paste the schematic at.
      * @return A list of all blocks which have been altered.
      */
-    public List<Block> paste(@NotNull Block block, boolean skipAir) {
+    public @NotNull List<Block> paste(@NotNull Block block, boolean skipAir) {
         Preconditions.checkNotNull(block, "Block is null");
 
-        var pos = block.getLocation();
-        var max = pos.clone().add(dimensions);
-        var bs = new ArrayList<Block>();
+        Location pos = block.getLocation();
+        Location max = pos.clone().add(dimensions);
+        ArrayList<Block> bs = new ArrayList<>();
 
-        var idx = 0;
+        int idx = 0;
         for (int x = block.getX(); x <= max.getBlockX(); x++) {
             pos.setX(x);
 
@@ -532,14 +538,14 @@ public final class Schematic {
                 for (int z = block.getZ(); z <= max.getBlockZ(); z++) {
                     pos.setZ(z);
 
-                    var data = palette.get(blocks.get(idx));
+                    BlockData data = palette.get(blocks.get(idx));
 
                     if (skipAir && data.getMaterial().isAir()) {
                         idx++;
                         continue;
                     }
 
-                    var loopBlock = pos.getBlock();
+                    Block loopBlock = pos.getBlock();
                     loopBlock.setBlockData(data);
                     bs.add(loopBlock);
 
@@ -551,8 +557,8 @@ public final class Schematic {
         return bs;
     }
 
-    // rounds vector to lowest ints
-    private static Vector round(Vector vector) {
+    @Contract("_ -> new")
+    private static @NotNull Vector round(@NotNull Vector vector) {
         return new Vector(Math.floor(vector.getX()), Math.floor(vector.getY()), Math.floor(vector.getZ()));
     }
 
@@ -716,8 +722,9 @@ public final class Schematic {
         return Objects.hash(dataVersion, minecraftVersion, dimensions, palette, blocks);
     }
 
+    @Contract(pure = true)
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Schematic[" +
                 "dataVersion=" + dataVersion + ", " +
                 "minecraftVersion=" + minecraftVersion + ", " +

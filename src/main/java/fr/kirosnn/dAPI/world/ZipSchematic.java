@@ -14,8 +14,8 @@ public class ZipSchematic extends JsonSchematic {
 
     @Override
     void write(File file, JsonSchematic type) throws IOException {
-        try (var zipOutputStream = new ZipOutputStream(new FileOutputStream(file));
-             var writer = new BufferedWriter(new OutputStreamWriter(zipOutputStream))) {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file));
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(zipOutputStream))) {
             zipOutputStream.putNextEntry(new ZipEntry("schematic.json"));
 
             GSON.toJson(type, writer);
@@ -27,8 +27,8 @@ public class ZipSchematic extends JsonSchematic {
 
     @Override
     JsonSchematic read(File file) throws IOException {
-        try (var zipInputStream = new ZipInputStream(new FileInputStream(file));
-             var reader = new BufferedReader(new InputStreamReader(zipInputStream))) {
+        try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file));
+             BufferedReader reader = new BufferedReader(new InputStreamReader(zipInputStream))) {
             ZipEntry entry = zipInputStream.getNextEntry();
             if (entry == null) {
                 throw new IOException("No entries in zip file");

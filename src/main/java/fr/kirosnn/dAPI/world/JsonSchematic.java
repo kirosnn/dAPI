@@ -11,9 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,14 +47,9 @@ public class JsonSchematic implements FileType {
     private Map<String, List<String>> waypoints;
 
     public JsonSchematic() {
-
     }
 
-    public JsonSchematic(
-            int dataVersion, String minecraftVersion,
-            List<Integer> dimensions, List<String> palette,
-            String blocks
-    ) {
+    public JsonSchematic(int dataVersion, String minecraftVersion, List<Integer> dimensions, List<String> palette, String blocks) {
         this.dataVersion = dataVersion;
         this.minecraftVersion = minecraftVersion;
         this.dimensions = dimensions;
@@ -65,11 +58,7 @@ public class JsonSchematic implements FileType {
         this.waypoints = new HashMap<>();
     }
 
-    public JsonSchematic(
-            int dataVersion, String minecraftVersion,
-            List<Integer> dimensions, List<String> palette,
-            String blocks, Map<String, List<String>> waypoints
-    ) {
+    public JsonSchematic(int dataVersion, String minecraftVersion, List<Integer> dimensions, List<String> palette, String blocks, Map<String, List<String>> waypoints) {
         this.dataVersion = dataVersion;
         this.minecraftVersion = minecraftVersion;
         this.dimensions = dimensions;
@@ -83,15 +72,21 @@ public class JsonSchematic implements FileType {
         Preconditions.checkNotNull(schematic, "Schematic is null");
         Preconditions.checkNotNull(file, "File is null");
 
-        var dimensionVector = schematic.getDimensions().subtract(new Vector(1, 1, 1));
-        var dimensions = List.of(dimensionVector.getBlockX(), dimensionVector.getBlockY(), dimensionVector.getBlockZ());
-        var palette = schematic.getPalette().stream().map(it -> it.getAsString(true)).toList();
-        var serializedBlocks = String.join("", schematic.getBlocks().stream().map(this::getChar).toList());
-        var waypoints = schematic.getWaypoints().entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-                        .map(it -> it.getX() + "," + it.getY() + "," + it.getZ() + "," + it.getYaw() + "," + it.getPitch()).toList()));
+        Vector dimensionVector = schematic.getDimensions().subtract(new Vector(1, 1, 1));
+        List<Integer> dimensions = Arrays.asList(dimensionVector.getBlockX(), dimensionVector.getBlockY(), dimensionVector.getBlockZ());
+        List<String> palette = schematic.getPalette().stream().map(it -> it.getAsString(true)).collect(Collectors.toList());
+        String serializedBlocks = String.join("", schematic.getBlocks().stream().map(this::getChar).collect(Collectors.toList()));
 
-        var jsonSchematic = new JsonSchematic(schematic.getDataVersion(), schematic.getMinecraftVersion(),
+        Map<String, List<String>> waypoints = new HashMap<>();
+        for (Map.Entry<String, List<Location>> entry : schematic.getWaypoints().entrySet()) {
+            List<String> waypointList = new ArrayList<>();
+            for (Location it : entry.getValue()) {
+                waypointList.add(it.getX() + "," + it.getY() + "," + it.getZ() + "," + it.getYaw() + "," + it.getPitch());
+            }
+            waypoints.put(entry.getKey(), waypointList);
+        }
+
+        JsonSchematic jsonSchematic = new JsonSchematic(schematic.getDataVersion(), schematic.getMinecraftVersion(),
                 dimensions, palette, serializedBlocks, waypoints);
 
         try {
@@ -104,9 +99,8 @@ public class JsonSchematic implements FileType {
     }
 
     void write(File file, JsonSchematic type) throws IOException {
-        try (var writer = new BufferedWriter(new FileWriter(file))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             GSON.toJson(type, writer);
-
             writer.flush();
         }
     }
@@ -118,65 +112,66 @@ public class JsonSchematic implements FileType {
         Preconditions.checkArgument(file.exists(), "File does not exist");
 
         try {
-            var serialized = read(file);
+            JsonSchematic serialized = read(file);
 
-            var dataVersion = serialized.dataVersion;
-            var mcVersion = serialized.minecraftVersion;
-            var unparsedPalette = serialized.palette;
+            int dataVersion = serialized.dataVersion;
+            String mcVersion = serialized.minecraftVersion;
+            List<String> unparsedPalette = serialized.palette;
 
-            var palette = unparsedPalette.stream().map(Bukkit::createBlockData).toList();
-            var dimensions = new Vector(serialized.dimensions.get(0),
-                    serialized.dimensions.get(1),
-                    serialized.dimensions.get(2));
-            var blocks = serialized.blocks.chars().mapToObj(c -> fromChar((char) c)).toList();
+            List<org.bukkit.block.data.BlockData> palette = unparsedPalette.stream()
+                    .map(Bukkit::createBlockData)
+                    .collect(Collectors.toList());
 
-            var waypoints = new HashMap<String, List<Location>>();
+            Vector dimensions = new Vector(serialized.dimensions.get(0), serialized.dimensions.get(1), serialized.dimensions.get(2));
+            List<Short> blocks = serialized.blocks.chars()
+                    .mapToObj(c -> fromChar((char) c))
+                    .collect(Collectors.toList());
+
+            Map<String, List<Location>> waypoints = new HashMap<>();
             if (dataVersion >= 2) {
-                serialized.waypoints.forEach((key, locations) ->
-                        waypoints.put(key, locations.stream()
-                                .map(it -> it.split(","))
-                                .map(it -> new Location(null, Double.parseDouble(it[0]),
-                                        Double.parseDouble(it[1]),
-                                        Double.parseDouble(it[2]),
-                                        Float.parseFloat(it[3]),
-                                        Float.parseFloat(it[4])))
-                                .toList()));
+                for (Map.Entry<String, List<String>> entry : serialized.waypoints.entrySet()) {
+                    List<Location> locationList = new ArrayList<>();
+                    for (String it : entry.getValue()) {
+                        String[] parts = it.split(",");
+                        locationList.add(new Location(null, Double.parseDouble(parts[0]),
+                                Double.parseDouble(parts[1]), Double.parseDouble(parts[2]),
+                                Float.parseFloat(parts[3]), Float.parseFloat(parts[4])));
+                    }
+                    waypoints.put(entry.getKey(), locationList);
+                }
             }
 
-            return new Schematic(Schematic.DATA_VERSION, mcVersion, dimensions,
-                    palette, blocks, waypoints);
+            return new Schematic(Schematic.DATA_VERSION, mcVersion, dimensions, palette, blocks, waypoints);
         } catch (IOException e) {
             return null;
         }
     }
 
     JsonSchematic read(File file) throws IOException {
-        try (var reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             return GSON.fromJson(reader, JsonSchematic.class);
         }
     }
 
-    // avoids control chars
+    // Avoids control chars
     String getChar(short id) {
         return chars.computeIfAbsent(id, it -> {
             do {
                 currentChar++;
             } while (Character.isISOControl(currentChar));
 
-            return Character.toString(currentChar);
+            return Character.toString((char) currentChar);
         });
     }
 
     short fromChar(char c) {
         return controls.computeIfAbsent(c, it -> {
-            var controlSince = 0;
-
-            for (var i = START; i < c; i++) {
+            int controlSince = 0;
+            for (int i = START; i < c; i++) {
                 if (Character.isISOControl(i)) {
                     controlSince++;
                 }
             }
-
             return (short) (c - START - controlSince);
         });
     }
