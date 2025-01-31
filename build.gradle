@@ -3,11 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+compileJava {
+    options.release.set(17)
 }
-
 
 group = 'fr.kirosnn'
 version = '0.0.1'
