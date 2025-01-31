@@ -3,6 +3,11 @@ plugins {
     id 'maven-publish'
 }
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+
 group = 'fr.kirosnn'
 version = '0.0.1'
 
