@@ -3,9 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-compileJava {
-    options.release.set(17)
-}
+
 
 group = 'fr.kirosnn'
 version = '0.0.1'
