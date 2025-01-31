@@ -4,45 +4,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Utility class for managing placeholders.
+ * The type Placeholders.
  */
 public class Placeholders {
     private static final Map<String, Object> placeholders = new HashMap<>();
 
     /**
-     * Adds or updates a placeholder.
+     * Sets placeholder.
      *
-     * @param key   The placeholder key (e.g., "%server_name%")
-     * @param value The associated value (e.g., "MyAwesomeServer")
+     * @param key   the key
+     * @param value the value
      */
     public static void setPlaceholder(String key, Object value) {
         placeholders.put(key, value);
     }
 
     /**
-     * Retrieves the value of a placeholder.
+     * Gets placeholder.
      *
-     * @param key The placeholder key (e.g., "%server_name%")
-     * @return The associated value, or null if the placeholder does not exist
+     * @param key the key
+     * @return the placeholder
      */
     public static Object getPlaceholder(String key) {
         return placeholders.get(key);
     }
 
     /**
-     * Checks if a placeholder exists.
+     * Has placeholder boolean.
      *
-     * @param key The placeholder key
-     * @return true if the placeholder exists, otherwise false
+     * @param key the key
+     * @return the boolean
      */
     public static boolean hasPlaceholder(String key) {
         return placeholders.containsKey(key);
     }
 
     /**
-     * Removes a placeholder.
+     * Remove placeholder.
      *
-     * @param key The placeholder key
+     * @param key the key
      */
     public static void removePlaceholder(String key) {
         placeholders.remove(key);

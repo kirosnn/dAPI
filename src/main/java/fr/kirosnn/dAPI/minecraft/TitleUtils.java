@@ -4,30 +4,30 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Utility class to send titles to players.
+ * The type Title utils.
  */
 public class TitleUtils {
 
     /**
-     * Sends a basic title to a player.
+     * Send title.
      *
-     * @param player   The target player
-     * @param title    The title text
-     * @param subtitle The subtitle text
+     * @param player   the player
+     * @param title    the title
+     * @param subtitle the subtitle
      */
     public static void sendTitle(@NotNull Player player, String title, String subtitle) {
         sendTitle(player, title, subtitle, 10, 70, 20);
     }
 
     /**
-     * Sends a title with a custom duration.
+     * Send title.
      *
-     * @param player   The target player
-     * @param title    The title text
-     * @param subtitle The subtitle text
-     * @param fadeIn   Time for the title to fade in (in ticks)
-     * @param stay     Time for the title to stay on screen (in ticks)
-     * @param fadeOut  Time for the title to fade out (in ticks)
+     * @param player   the player
+     * @param title    the title
+     * @param subtitle the subtitle
+     * @param fadeIn   the fade in
+     * @param stay     the stay
+     * @param fadeOut  the fade out
      */
     public static void sendTitle(@NotNull Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
         player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);

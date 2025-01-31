@@ -19,12 +19,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
- * Creates a new {@link Schematic} instance. This should only be used for custom {@link FileType} implementations.
- *
- * @see #create(Location, Location)
+ * The type Schematic.
  */
 public final class Schematic {
 
+    /**
+     * The constant DATA_VERSION.
+     */
     public static final int DATA_VERSION = 2;
     private final int dataVersion;
     private final String minecraftVersion;
@@ -34,12 +35,14 @@ public final class Schematic {
     private final Map<String, List<Location>> waypoints;
 
     /**
-     * @param dataVersion      The data version.
-     * @param minecraftVersion The Minecraft version.
-     * @param dimensions       The dimensions of the schematic.
-     * @param palette          The palette of block data.
-     * @param blocks           The block data.
-     * @param waypoints        The waypoints.
+     * Instantiates a new Schematic.
+     *
+     * @param dataVersion      the data version
+     * @param minecraftVersion the minecraft version
+     * @param dimensions       the dimensions
+     * @param palette          the palette
+     * @param blocks           the blocks
+     * @param waypoints        the waypoints
      */
     public Schematic(int dataVersion, String minecraftVersion, Vector dimensions,
                      List<BlockData> palette, List<Short> blocks, Map<String, List<Location>> waypoints) {
@@ -52,11 +55,13 @@ public final class Schematic {
     }
 
     /**
-     * @param dataVersion      The data version.
-     * @param minecraftVersion The Minecraft version.
-     * @param dimensions       The dimensions of the schematic.
-     * @param palette          The palette of block data.
-     * @param blocks           The block data.
+     * Instantiates a new Schematic.
+     *
+     * @param dataVersion      the data version
+     * @param minecraftVersion the minecraft version
+     * @param dimensions       the dimensions
+     * @param palette          the palette
+     * @param blocks           the blocks
      */
     public Schematic(int dataVersion, String minecraftVersion, Vector dimensions,
                      List<BlockData> palette, List<Short> blocks) {
@@ -64,12 +69,11 @@ public final class Schematic {
     }
 
     /**
-     * Synchronously gets and stores all blocks between the positions in a new {@link Schematic} instance.
-     * For large schematics, use {@link #createAsync(Location, Location, Plugin)}.
+     * Create schematic.
      *
-     * @param pos1 The first position.
-     * @param pos2 The second position.
-     * @return A new {@link Schematic} instance.
+     * @param pos1 the pos 1
+     * @param pos2 the pos 2
+     * @return the schematic
      */
     @NotNull
     public static Schematic create(@NotNull Location pos1, @NotNull Location pos2) {
@@ -79,12 +83,11 @@ public final class Schematic {
     }
 
     /**
-     * Synchronously gets and stores all blocks between the positions in a new {@link Schematic} instance.
-     * For large schematics, use {@link #createAsync(Block, Block, Plugin)}.
+     * Create schematic.
      *
-     * @param pos1 The first block.
-     * @param pos2 The second block.
-     * @return A new {@link Schematic} instance.
+     * @param pos1 the pos 1
+     * @param pos2 the pos 2
+     * @return the schematic
      */
     @NotNull
     public static Schematic create(@NotNull Block pos1, @NotNull Block pos2) {
@@ -97,13 +100,12 @@ public final class Schematic {
     }
 
     /**
-     * Synchronously gets and stores all blocks between the positions in a new {@link Schematic} instance.
-     * For large schematics, use {@link #createAsync(Location, Location, Plugin)}.
+     * Create schematic.
      *
-     * @param pos1 The first position.
-     * @param pos2 The second position.
-     * @param waypoints A map of waypoints, where each key identifies a vector offset from the paste location.
-     * @return A new {@link Schematic} instance.
+     * @param pos1      the pos 1
+     * @param pos2      the pos 2
+     * @param waypoints the waypoints
+     * @return the schematic
      */
     @NotNull
     public static Schematic create(
@@ -117,13 +119,12 @@ public final class Schematic {
     }
 
     /**
-     * Synchronously gets and stores all blocks between the positions in a new {@link Schematic} instance.
-     * For large schematics, use {@link #createAsync(Block, Block, Plugin)}.
+     * Create schematic.
      *
-     * @param pos1 The first block.
-     * @param pos2 The second block.
-     * @param waypoints A map of waypoints, where each key identifies a vector offset from the paste location.
-     * @return A new {@link Schematic} instance.
+     * @param pos1      the pos 1
+     * @param pos2      the pos 2
+     * @param waypoints the waypoints
+     * @return the schematic
      */
     @NotNull
     public static Schematic create(
@@ -153,13 +154,12 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously gets and stores all blocks between the positions in a new {@link Schematic} instance.
-     * This method avoids blocking the main thread during block fetching.
+     * Create async completable future.
      *
-     * @param pos1 The first position.
-     * @param pos2 The second position.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}. When completed, the new {@link Schematic} instance is returned.
+     * @param pos1   the pos 1
+     * @param pos2   the pos 2
+     * @param plugin the plugin
+     * @return the completable future
      */
     @NotNull
     public static CompletableFuture<Schematic> createAsync(
@@ -175,13 +175,12 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously gets and stores all blocks between the positions in a new {@link Schematic} instance.
-     * This method avoids blocking the main thread during block fetching.
+     * Create async completable future.
      *
-     * @param pos1 The first position.
-     * @param pos2 The second position.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}. When completed, the new {@link Schematic} instance is returned.
+     * @param pos1   the pos 1
+     * @param pos2   the pos 2
+     * @param plugin the plugin
+     * @return the completable future
      */
     @NotNull
     public static CompletableFuture<Schematic> createAsync(
@@ -193,14 +192,13 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously gets and stores all blocks between the positions in a new {@link Schematic} instance.
-     * This method avoids blocking the main thread during block fetching.
+     * Create async completable future.
      *
-     * @param pos1 The first position.
-     * @param pos2 The second position.
-     * @param waypoints A map of waypoints, where each key identifies a vector offset from the paste location.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}. When completed, the new {@link Schematic} instance is returned.
+     * @param pos1      the pos 1
+     * @param pos2      the pos 2
+     * @param waypoints the waypoints
+     * @param plugin    the plugin
+     * @return the completable future
      */
     @NotNull
     public static CompletableFuture<Schematic> createAsync(
@@ -217,14 +215,13 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously gets and stores all blocks between the positions in a new {@link Schematic} instance.
-     * This method avoids blocking the main thread during block fetching.
+     * Create async completable future.
      *
-     * @param pos1 The first position.
-     * @param pos2 The second position.
-     * @param waypoints A map of waypoints, where each key identifies a vector offset from the paste location.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}. When completed, the new {@link Schematic} instance is returned.
+     * @param pos1      the pos 1
+     * @param pos2      the pos 2
+     * @param waypoints the waypoints
+     * @param plugin    the plugin
+     * @return the completable future
      */
     @NotNull
     public static CompletableFuture<Schematic> createAsync(
@@ -237,13 +234,11 @@ public final class Schematic {
     }
 
     /**
-     * Reads a schematic from a file with the specified {@link FileType}.
-     * For large schematics, use {@link #loadAsync(File, FileType, Plugin)}.
+     * Load schematic.
      *
-     * @param file The file to read.
-     * @param type The {@link FileType} instance.
-     * @return A new {@link Schematic} instance, or null if reading fails or if the file doesn't exist.
-     * @throws IllegalArgumentException If file does not exist or is null.
+     * @param file the file
+     * @param type the type
+     * @return the schematic
      */
     @Nullable
     public static Schematic load(@NotNull File file, @NotNull FileType type) {
@@ -254,12 +249,11 @@ public final class Schematic {
     }
 
     /**
-     * Loads a schematic from a file with the specified {@link FileType}.
-     * For large schematics, use {@link #loadAsync(File, FileType, Plugin)}.
+     * Load schematic.
      *
-     * @param file The file to read.
-     * @param type The {@link FileType} instance.
-     * @return A new {@link Schematic} instance, or null if reading fails or if the file doesn't exist.
+     * @param file the file
+     * @param type the type
+     * @return the schematic
      */
     @Nullable
     public static Schematic load(@NotNull String file, @NotNull FileType type) {
@@ -267,12 +261,10 @@ public final class Schematic {
     }
 
     /**
-     * Reads a schematic from a file with the default {@link JsonSchematic}.
-     * For large schematics, use {@link #loadAsync(File, Plugin)}.
+     * Load schematic.
      *
-     * @param file The file to read.
-     * @return A new {@link Schematic} instance, or null if reading fails or if the file doesn't exist.
-     * @throws IllegalArgumentException If file does not exist or is null.
+     * @param file the file
+     * @return the schematic
      */
     @Nullable
     public static Schematic load(@NotNull File file) {
@@ -280,12 +272,10 @@ public final class Schematic {
     }
 
     /**
-     * Reads a schematic from a file with the default {@link JsonSchematic}.
-     * For large schematics, use {@link #loadAsync(File, Plugin)}.
+     * Load schematic.
      *
-     * @param file The file to read.
-     * @return A new {@link Schematic} instance, or null if reading fails or if the file doesn't exist.
-     * @throws IllegalArgumentException If file does not exist or is null.
+     * @param file the file
+     * @return the schematic
      */
     @Nullable
     public static Schematic load(@NotNull String file) {
@@ -293,14 +283,12 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously reads a schematic from a file with the specified {@link FileType}.
+     * Load async completable future.
      *
-     * @param file The file to read.
-     * @param type The {@link FileType} instance.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}. When completed, the new {@link Schematic} instance is returned,
-     * or null if reading fails or if the file doesn't exist.
-     * @throws IllegalArgumentException If file does not exist or is null.
+     * @param file   the file
+     * @param type   the type
+     * @param plugin the plugin
+     * @return the completable future
      */
     public static @NotNull CompletableFuture<Schematic> loadAsync(
             @NotNull File file,
@@ -315,40 +303,34 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously reads a schematic from a file with the specified {@link FileType}.
+     * Load async completable future.
      *
-     * @param file The file to read.
-     * @param type The {@link FileType} instance.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}. When completed, the new {@link Schematic} instance is returned,
-     * or null if reading fails or if the file doesn't exist.
-     * @throws IllegalArgumentException If file does not exist or is null.
+     * @param file   the file
+     * @param type   the type
+     * @param plugin the plugin
+     * @return the completable future
      */
     public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull FileType type, @NotNull Plugin plugin) {
         return loadAsync(new File(file), type, plugin);
     }
 
     /**
-     * Asynchronously reads a schematic from a file with the default {@link JsonSchematic}.
+     * Load async completable future.
      *
-     * @param file The file to read.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}. When completed, the new {@link Schematic} instance is returned,
-     * or null if reading fails or if the file doesn't exist.
-     * @throws IllegalArgumentException If file does not exist or is null.
+     * @param file   the file
+     * @param plugin the plugin
+     * @return the completable future
      */
     public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull Plugin plugin) {
         return loadAsync(file, new JsonSchematic(), plugin);
     }
 
     /**
-     * Asynchronously reads a schematic from a file with the default {@link JsonSchematic}.
+     * Load async completable future.
      *
-     * @param file The file to read.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}. When completed, the new {@link Schematic} instance is returned,
-     * or null if reading fails or if the file doesn't exist.
-     * @throws IllegalArgumentException If file does not exist or is null.
+     * @param file   the file
+     * @param plugin the plugin
+     * @return the completable future
      */
     public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull Plugin plugin) {
         return loadAsync(new File(file), plugin);
@@ -395,13 +377,11 @@ public final class Schematic {
     }
 
     /**
-     * Saves the schematic to a file with the specified {@link FileType}.
-     * For large schematics, use {@link #saveAsync(File, FileType, Plugin)}.
+     * Save boolean.
      *
-     * @param file The file to save to.
-     * @param type The {@link FileType} instance.
-     * @return {@code true} if the schematic was saved successfully, false if an error was returned.
-     * @throws IllegalArgumentException If file or filetype is null.
+     * @param file the file
+     * @param type the type
+     * @return the boolean
      */
     public boolean save(@NotNull File file, @NotNull FileType type) {
         Preconditions.checkNotNull(file, "File is null");
@@ -411,50 +391,43 @@ public final class Schematic {
     }
 
     /**
-     * Saves the schematic to a file with the specified {@link FileType}.
-     * For large schematics, use {@link #saveAsync(File, FileType, Plugin)}.
+     * Save boolean.
      *
-     * @param file The file to save to.
-     * @param type The {@link FileType} instance.
-     * @return {@code true} if the schematic was saved successfully, false if an error was returned.
-     * @throws IllegalArgumentException If file or filetype is null.
+     * @param file the file
+     * @param type the type
+     * @return the boolean
      */
     public boolean save(@NotNull String file, @NotNull FileType type) {
         return save(new File(file), type);
     }
 
     /**
-     * Saves the schematic to a file with the default {@link JsonSchematic}.
-     * For large schematics, use {@link #saveAsync(File, Plugin)}.
+     * Save boolean.
      *
-     * @param file The file to save to.
-     * @return {@code true} if the schematic was saved successfully, false if an error was returned.
-     * @throws IllegalArgumentException If file is null.
+     * @param file the file
+     * @return the boolean
      */
     public boolean save(@NotNull File file) {
         return save(file, new JsonSchematic());
     }
 
     /**
-     * Saves the schematic to a file with the default {@link JsonSchematic}.
-     * For large schematics, use {@link #saveAsync(File, Plugin)}.
+     * Save boolean.
      *
-     * @param file The file to save to.
-     * @return {@code true} if the schematic was saved successfully, false if an error was returned.
-     * @throws IllegalArgumentException If file is null.
+     * @param file the file
+     * @return the boolean
      */
     public boolean save(@NotNull String file) {
         return save(new File(file));
     }
 
     /**
-     * Asynchronously saves the schematic to a file with the specified {@link FileType}.
+     * Save async completable future.
      *
-     * @param file The file to save to.
-     * @param type The {@link FileType} instance.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}.
-     * When completed, {@code true} if the schematic was saved successfully, false if an error was returned.
+     * @param file   the file
+     * @param type   the type
+     * @param plugin the plugin
+     * @return the completable future
      */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull File file, @NotNull FileType type, @NotNull Plugin plugin) {
@@ -466,13 +439,12 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously saves the schematic to a file with the specified {@link FileType}.
+     * Save async completable future.
      *
-     * @param file The file to save to.
-     * @param type The {@link FileType} instance.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}.
-     * When completed, {@code true} if the schematic was saved successfully, false if an error was returned.
+     * @param file   the file
+     * @param type   the type
+     * @param plugin the plugin
+     * @return the completable future
      */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull String file, @NotNull FileType type, @NotNull Plugin plugin) {
@@ -480,12 +452,11 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously saves the schematic to a file with the default {@link JsonSchematic}.
+     * Save async completable future.
      *
-     * @param file The file to save to.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}.
-     * When completed, {@code true} if the schematic was saved successfully, false if an error was returned.
+     * @param file   the file
+     * @param plugin the plugin
+     * @return the completable future
      */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull File file, @NotNull Plugin plugin) {
@@ -493,12 +464,11 @@ public final class Schematic {
     }
 
     /**
-     * Asynchronously saves the schematic to a file with the default {@link JsonSchematic}.
+     * Save async completable future.
      *
-     * @param file The file to save to.
-     * @param plugin The plugin instance.
-     * @return A {@link CompletableFuture}.
-     * When completed, {@code true} if the schematic was saved successfully, false if an error was returned.
+     * @param file   the file
+     * @param plugin the plugin
+     * @return the completable future
      */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull String file, @NotNull Plugin plugin) {
@@ -506,20 +476,22 @@ public final class Schematic {
     }
 
     /**
-     * Pastes the schematic at the specified location.
+     * Paste list.
      *
-     * @param location The location to paste the schematic at.
-     * @return A list of all blocks which have been altered.
+     * @param location the location
+     * @param skipAir  the skip air
+     * @return the list
      */
     public @NotNull List<Block> paste(@NotNull Location location, boolean skipAir) {
         return paste(location.getBlock(), skipAir);
     }
 
     /**
-     * Pastes the schematic at the specified block.
+     * Paste list.
      *
-     * @param block The block to paste the schematic at.
-     * @return A list of all blocks which have been altered.
+     * @param block   the block
+     * @param skipAir the skip air
+     * @return the list
      */
     public @NotNull List<Block> paste(@NotNull Block block, boolean skipAir) {
         Preconditions.checkNotNull(block, "Block is null");
@@ -563,12 +535,11 @@ public final class Schematic {
     }
 
     /**
-     * Returns the absolute locations of specific waypoints, not relative to the paste location.
-     * If the waypoints do not exist, null is returned.
+     * Gets waypoints.
      *
-     * @param pastedAt The location where the schematic was pasted.
-     * @param name The name of the waypoint.
-     * @return The absolute location of the waypoints, or null if the waypoints do not exist.
+     * @param pastedAt the pasted at
+     * @param name     the name
+     * @return the waypoints
      */
     @Nullable
     public List<Location> getWaypoints(@NotNull Location pastedAt, @NotNull String name) {
@@ -576,12 +547,11 @@ public final class Schematic {
     }
 
     /**
-     * Returns the absolute locations of specific waypoints, not relative to the paste location.
-     * If the waypoints do not exist, null is returned.
+     * Gets waypoints.
      *
-     * @param pastedAt The block where the schematic was pasted.
-     * @param name The name of the waypoint.
-     * @return The absolute location of the waypoints, or null if the waypoints do not exist.
+     * @param pastedAt the pasted at
+     * @param name     the name
+     * @return the waypoints
      */
     @Nullable
     public List<Location> getWaypoints(@NotNull Block pastedAt, @NotNull String name) {
@@ -601,12 +571,11 @@ public final class Schematic {
     }
 
     /**
-     * Returns the absolute location of a specific waypoint, not relative to the paste location.
-     * If the waypoint does not exist, null is returned.
+     * Gets waypoint.
      *
-     * @param pastedAt The location where the schematic was pasted.
-     * @param name The name of the waypoint.
-     * @return The absolute location of the waypoint, or null if the waypoint does not exist.
+     * @param pastedAt the pasted at
+     * @param name     the name
+     * @return the waypoint
      */
     @Nullable
     public Location getWaypoint(@NotNull Location pastedAt, @NotNull String name) {
@@ -614,12 +583,11 @@ public final class Schematic {
     }
 
     /**
-     * Returns the absolute location of a specific waypoint, not relative to the paste location.
-     * If the waypoint does not exist, null is returned.
+     * Gets waypoint.
      *
-     * @param pastedAt The block where the schematic was pasted.
-     * @param name The name of the waypoint.
-     * @return The absolute location of the waypoint, or null if the waypoint does not exist.
+     * @param pastedAt the pasted at
+     * @param name     the name
+     * @return the waypoint
      */
     @Nullable
     public Location getWaypoint(@NotNull Block pastedAt, @NotNull String name) {
@@ -641,14 +609,18 @@ public final class Schematic {
     }
 
     /**
-     * @return The data version this schematic was saved in.
+     * Gets data version.
+     *
+     * @return the data version
      */
     public int getDataVersion() {
         return dataVersion;
     }
 
     /**
-     * @return The Minecraft version this schematic was saved in.
+     * Gets minecraft version.
+     *
+     * @return the minecraft version
      */
     @NotNull
     public String getMinecraftVersion() {
@@ -656,7 +628,9 @@ public final class Schematic {
     }
 
     /**
-     * @return The dimensions of the schematic.
+     * Gets dimensions.
+     *
+     * @return the dimensions
      */
     @NotNull
     public Vector getDimensions() {
@@ -664,7 +638,9 @@ public final class Schematic {
     }
 
     /**
-     * @return The palette of block data.
+     * Gets palette.
+     *
+     * @return the palette
      */
     @NotNull
     @UnmodifiableView
@@ -672,34 +648,69 @@ public final class Schematic {
         return Collections.unmodifiableList(palette);
     }
 
+    /**
+     * Gets blocks.
+     *
+     * @return the blocks
+     */
     @NotNull
     @UnmodifiableView
     public List<Short> getBlocks() {
         return Collections.unmodifiableList(blocks);
     }
 
+    /**
+     * Gets waypoints.
+     *
+     * @return the waypoints
+     */
     @NotNull
     @UnmodifiableView
     public Map<String, List<Location>> getWaypoints() {
         return Collections.unmodifiableMap(waypoints);
     }
 
+    /**
+     * Data version int.
+     *
+     * @return the int
+     */
     public int dataVersion() {
         return dataVersion;
     }
 
+    /**
+     * Minecraft version string.
+     *
+     * @return the string
+     */
     public String minecraftVersion() {
         return minecraftVersion;
     }
 
+    /**
+     * Dimensions vector.
+     *
+     * @return the vector
+     */
     public Vector dimensions() {
         return dimensions;
     }
 
+    /**
+     * Palette list.
+     *
+     * @return the list
+     */
     public List<BlockData> palette() {
         return palette;
     }
 
+    /**
+     * Blocks list.
+     *
+     * @return the list
+     */
     public List<Short> blocks() {
         return blocks;
     }
@@ -733,25 +744,50 @@ public final class Schematic {
                 "blocks=" + blocks + ']';
     }
 
+    /**
+     * The type Blocks data.
+     */
     public static class BlocksData {
         private final Vector dimensions;
         private final List<BlockData> palette;
         private final List<Short> blocks;
 
+        /**
+         * Instantiates a new Blocks data.
+         *
+         * @param dimensions the dimensions
+         * @param palette    the palette
+         * @param blocks     the blocks
+         */
         public BlocksData(Vector dimensions, List<BlockData> palette, List<Short> blocks) {
             this.dimensions = dimensions;
             this.palette = palette;
             this.blocks = blocks;
         }
 
+        /**
+         * Gets dimensions.
+         *
+         * @return the dimensions
+         */
         public Vector getDimensions() {
             return dimensions;
         }
 
+        /**
+         * Gets palette.
+         *
+         * @return the palette
+         */
         public List<BlockData> getPalette() {
             return palette;
         }
 
+        /**
+         * Gets blocks.
+         *
+         * @return the blocks
+         */
         public List<Short> getBlocks() {
             return blocks;
         }

@@ -1,16 +1,20 @@
 package fr.kirosnn.dAPI.utils.text;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * JSON file handler utility class for real data storage.
+ * The type Json file.
  */
 public class JsonFile {
 
@@ -21,11 +25,11 @@ public class JsonFile {
     private final Gson gson;
 
     /**
-     * Constructor for the JSON file manager.
+     * Instantiates a new Json file.
      *
-     * @param plugin     Bukkit/Spigot plugin
-     * @param folderPath Relative folder path inside the plugin directory (null or empty for the root folder)
-     * @param fileName   JSON file name (e.g., "data.json")
+     * @param plugin     the plugin
+     * @param folderPath the folder path
+     * @param fileName   the file name
      */
     public JsonFile(@NotNull JavaPlugin plugin, String folderPath, String fileName) {
         if (plugin == null) {
@@ -52,9 +56,6 @@ public class JsonFile {
         }
     }
 
-    /**
-     * Creates a new empty JSON file.
-     */
     private void createNewFile() {
         try {
             if (file.createNewFile()) {
@@ -68,7 +69,7 @@ public class JsonFile {
     }
 
     /**
-     * Loads the JSON data from the file.
+     * Load.
      */
     public void load() {
         try (Reader reader = new FileReader(file)) {
@@ -83,7 +84,7 @@ public class JsonFile {
     }
 
     /**
-     * Saves the JSON data to the file.
+     * Save.
      */
     public void save() {
         try (Writer writer = new FileWriter(file)) {
@@ -94,12 +95,12 @@ public class JsonFile {
     }
 
     /**
-     * Retrieves a value from the JSON file.
+     * Get t.
      *
      * @param <T>  the type parameter
-     * @param path Key path
-     * @param type Type of the value
-     * @return Value associated with the key or null if absent
+     * @param path the path
+     * @param type the type
+     * @return the t
      */
     public <T> T get(String path, Class<T> type) {
         JsonElement element = getElement(path);
@@ -107,12 +108,12 @@ public class JsonFile {
     }
 
     /**
-     * Retrieves a list from the JSON file.
+     * Gets list.
      *
-     * @param <T>  Type of elements in the list
-     * @param path Key path
-     * @param type Type of elements in the list
-     * @return List of elements or an empty list if absent
+     * @param <T>  the type parameter
+     * @param path the path
+     * @param type the type
+     * @return the list
      */
     public <T> List<T> getList(String path, Type type) {
         JsonElement element = getElement(path);
@@ -120,10 +121,10 @@ public class JsonFile {
     }
 
     /**
-     * Sets a value in the JSON file.
+     * Set.
      *
-     * @param path  Key path
-     * @param value Value to set
+     * @param path  the path
+     * @param value the value
      */
     public void set(@NotNull String path, Object value) {
         String[] keys = path.split("\\.");
@@ -142,9 +143,9 @@ public class JsonFile {
     }
 
     /**
-     * Removes a value from the JSON file.
+     * Remove.
      *
-     * @param path Key path
+     * @param path the path
      */
     public void remove(@NotNull String path) {
         String[] keys = path.split("\\.");
@@ -160,28 +161,28 @@ public class JsonFile {
     }
 
     /**
-     * Checks if a key exists in the JSON file.
+     * Contains boolean.
      *
-     * @param path Key path
-     * @return True if the key exists, otherwise False
+     * @param path the path
+     * @return the boolean
      */
     public boolean contains(String path) {
         return getElement(path) != null;
     }
 
     /**
-     * Retrieves the raw JSON data.
+     * Gets raw data.
      *
-     * @return JsonObject containing all data
+     * @return the raw data
      */
     public JsonObject getRawData() {
         return jsonData;
     }
 
     /**
-     * Sets the entire JSON object in the file.
+     * Sets json object.
      *
-     * @param jsonObject The new JsonObject to store
+     * @param jsonObject the json object
      */
     public void setJsonObject(@NotNull JsonObject jsonObject) {
         this.jsonData = jsonObject;
@@ -189,29 +190,23 @@ public class JsonFile {
     }
 
     /**
-     * Retrieves the entire JSON object stored in the file.
+     * Gets json object.
      *
-     * @return The JsonObject containing all the data, or an empty object if the file is empty
+     * @return the json object
      */
     public @NotNull JsonObject getJsonObject() {
         return (jsonData != null) ? jsonData : new JsonObject();
     }
 
     /**
-     * Checks if the file exists.
+     * Exists boolean.
      *
-     * @return True if the file exists and is valid, otherwise False
+     * @return the boolean
      */
     public boolean exists() {
         return file.exists() && jsonData != null;
     }
 
-    /**
-     * Retrieves a nested JSON element based on a dot-separated path.
-     *
-     * @param path The key path
-     * @return JsonElement or null if not found
-     */
     private @Nullable JsonElement getElement(@NotNull String path) {
         String[] keys = path.split("\\.");
         JsonObject obj = jsonData;

@@ -134,7 +134,7 @@ public class ScoreboardAPI {
         }
 
         /**
-         * Update scoreboard.
+         * Update.
          */
         public void update() {
             clear();
@@ -145,7 +145,7 @@ public class ScoreboardAPI {
         }
 
         /**
-         * Clear scoreboard.
+         * Clear.
          */
         public void clear() {
             scoreboard.getEntries().forEach(scoreboard::resetScores);

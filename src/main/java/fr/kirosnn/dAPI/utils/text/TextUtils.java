@@ -4,15 +4,15 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Utility class for text-related operations.
+ * The type Text utils.
  */
 public class TextUtils {
 
     /**
-     * Converts color codes from '&' to '§'.
+     * Colorize string.
      *
-     * @param text The input string with '&' as color code.
-     * @return The formatted string with '§' as color code.
+     * @param text the text
+     * @return the string
      */
     public static @NotNull String colorize(String text) {
         if (text == null) return "";

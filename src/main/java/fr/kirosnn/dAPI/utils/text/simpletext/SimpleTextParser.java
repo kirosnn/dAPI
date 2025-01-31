@@ -4,8 +4,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 
+/**
+ * The type Simple text parser.
+ */
 public class SimpleTextParser {
 
+    /**
+     * Parse string.
+     *
+     * @param input the input
+     * @return the string
+     */
     public static @NotNull String parse(@NotNull String input) {
         if (input.isEmpty()) return "";
 

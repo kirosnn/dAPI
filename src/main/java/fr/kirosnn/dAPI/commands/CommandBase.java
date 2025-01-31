@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * Abstract class for creating custom commands with subcommands.
+ * The type Command base.
  */
 public abstract class CommandBase implements CommandExecutor, TabCompleter {
 
@@ -17,42 +17,33 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
     private String noPermissionMessage = "§cYou don't have permission to use this command.";
 
     /**
-     * Sets the message to display if the user lacks permission.
+     * Sets no permission message.
      *
-     * @param message The no-permission message.
+     * @param message the message
      */
     public void setNoPermissionMessage(@NotNull String message) {
         this.noPermissionMessage = message;
     }
 
     /**
-     * Gets the current no-permission message.
+     * Gets no permission message.
      *
-     * @return The no-permission message.
+     * @return the no permission message
      */
     public String getNoPermissionMessage() {
         return noPermissionMessage;
     }
 
     /**
-     * Registers a subcommand.
+     * Register sub command.
      *
-     * @param name       The name of the subcommand.
-     * @param subCommand The logic for the subcommand.
+     * @param name       the name
+     * @param subCommand the sub command
      */
     public void registerSubCommand(@NotNull String name, SubCommand subCommand) {
         subCommands.put(name.toLowerCase(), subCommand);
     }
 
-    /**
-     * Executes the main command or a subcommand.
-     *
-     * @param sender  The command sender.
-     * @param command The command being executed.
-     * @param label   The alias used.
-     * @param args    The command arguments.
-     * @return True if the command is valid.
-     */
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
         if (args.length > 0) {
@@ -69,15 +60,6 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
         return execute(sender, args);
     }
 
-    /**
-     * Auto-completes subcommands.
-     *
-     * @param sender  The command sender.
-     * @param command The command.
-     * @param alias   The alias used.
-     * @param args    The command arguments.
-     * @return A list of available options.
-     */
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String @NotNull [] args) {
         if (args.length == 1) {
@@ -101,11 +83,11 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
     }
 
     /**
-     * Implement this method to define the logic of the main command.
+     * Execute boolean.
      *
-     * @param sender The command sender.
-     * @param args   The command arguments.
-     * @return True if the command is valid.
+     * @param sender the sender
+     * @param args   the args
+     * @return the boolean
      */
     public abstract boolean execute(CommandSender sender, String[] args);
 }

@@ -55,7 +55,7 @@ publishing {
             groupId = 'fr.kirosnn'
             artifactId = 'dAPI'
             version = project.version
-            artifact(tasks.named("jar"))
         }
     }
 }
+

@@ -1,27 +1,30 @@
 package fr.kirosnn.dAPI.minecraft;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Utility class for teleporting players with effects, sounds, cooldowns, and messages.
+ * The type Teleport utils.
  */
 public class TeleportUtils {
 
     /**
-     * Teleports a player with optional effects, cooldown, and messages.
+     * Teleport.
      *
-     * @param player          The target player
-     * @param location        The destination location
-     * @param cooldown        Time in seconds before teleporting (0 for instant)
-     * @param preTeleportMsg  Message before teleportation (null to disable)
-     * @param postTeleportMsg Message after teleportation (null to disable)
-     * @param soundEffect     Sound to play after teleporting (null to disable)
-     * @param particleEffect  Particle effect to display before teleporting (null to disable)
-     * @param plugin          The main plugin instance
+     * @param player          the player
+     * @param location        the location
+     * @param cooldown        the cooldown
+     * @param preTeleportMsg  the pre teleport msg
+     * @param postTeleportMsg the post teleport msg
+     * @param soundEffect     the sound effect
+     * @param particleEffect  the particle effect
+     * @param plugin          the plugin
      */
     public static void teleport(Player player, Location location, int cooldown,
                                 String preTeleportMsg, String postTeleportMsg,
@@ -49,9 +52,6 @@ public class TeleportUtils {
         }
     }
 
-    /**
-     * Performs the actual teleportation with optional message and sound.
-     */
     private static void performTeleport(@NotNull Player player, Location location, String postTeleportMsg, Sound soundEffect) {
         player.teleport(location);
 

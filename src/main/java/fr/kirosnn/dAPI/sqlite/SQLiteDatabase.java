@@ -5,11 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * The type Sq lite database.
@@ -21,11 +17,11 @@ public class SQLiteDatabase {
     private final Plugin plugin;
 
     /**
-     * Constructor to initialize a SQLite database inside a "databases" folder.
+     * Instantiates a new Sq lite database.
      *
-     * @param plugin The plugin instance.
-     * @param dbName The name of the database file (with .db extension).
-     * @throws IOException If the file or folders cannot be created.
+     * @param plugin the plugin
+     * @param dbName the db name
+     * @throws IOException the io exception
      */
     public SQLiteDatabase(@NotNull Plugin plugin, String dbName) throws IOException {
         this.plugin = plugin;
@@ -49,9 +45,9 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Opens a connection to the database.
+     * Connect.
      *
-     * @throws SQLException If an error occurs while connecting.
+     * @throws SQLException the sql exception
      */
     public void connect() throws SQLException {
         if (this.connection != null && !this.connection.isClosed()) {
@@ -63,9 +59,9 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Opens a connection to the database.
+     * Reconnect.
      *
-     * @throws SQLException If an error occurs while connecting.
+     * @throws SQLException the sql exception
      */
     public void reconnect() throws SQLException {
         if (this.connection != null && !this.connection.isClosed()) {
@@ -75,9 +71,9 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Ensures the database connection is alive. Reconnects if the connection is lost.
+     * Ensure connection.
      *
-     * @throws SQLException If the connection cannot be restored.
+     * @throws SQLException the sql exception
      */
     public void ensureConnection() throws SQLException {
         if (this.connection == null || this.connection.isClosed()) {
@@ -86,9 +82,9 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Closes the connection to the database.
+     * Close.
      *
-     * @throws SQLException If an error occurs while closing.
+     * @throws SQLException the sql exception
      */
     public void close() throws SQLException {
         if (this.connection != null && !this.connection.isClosed()) {
@@ -99,10 +95,10 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Executes an SQL update statement (e.g., CREATE, INSERT, UPDATE).
+     * Execute update.
      *
-     * @param query The SQL query to execute.
-     * @throws SQLException If an error occurs during execution.
+     * @param query the query
+     * @throws SQLException the sql exception
      */
     public void executeUpdate(String query) throws SQLException {
         ensureConnection();
@@ -112,11 +108,11 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Executes an SQL query of type SELECT and returns the result.
+     * Execute query result set.
      *
-     * @param query The SQL query to execute.
-     * @return ResultSet The result of the query.
-     * @throws SQLException If an error occurs during execution.
+     * @param query the query
+     * @return the result set
+     * @throws SQLException the sql exception
      */
     public ResultSet executeQuery(String query) throws SQLException {
         ensureConnection();
@@ -125,10 +121,10 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Return database.
+     * Gets connection.
      *
-     * @return Coonection SQLite.
-     * @throws SQLException If connection is close or equal null.
+     * @return the connection
+     * @throws SQLException the sql exception
      */
     public Connection getConnection() throws SQLException {
         ensureConnection();
@@ -136,10 +132,10 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Checks if the database is connected.
+     * Is connected boolean.
      *
-     * @return true if connected, false otherwise.
-     * @throws SQLException If an error occurs during the check.
+     * @return the boolean
+     * @throws SQLException the sql exception
      */
     public boolean isConnected() throws SQLException {
         return this.connection != null && !this.connection.isClosed();

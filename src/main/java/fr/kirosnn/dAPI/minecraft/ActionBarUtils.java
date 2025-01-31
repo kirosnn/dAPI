@@ -6,15 +6,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
- * Utility class for sending Action Bar messages to players using packets.
+ * The type Action bar utils.
  */
 public class ActionBarUtils {
 
     /**
-     * Sends an Action Bar message to a player.
+     * Send action bar.
      *
-     * @param player  The target player
-     * @param message The message to display
+     * @param player  the player
+     * @param message the message
      */
     public static void sendActionBar(Player player, String message) {
         if (player == null || message == null) return;

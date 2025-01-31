@@ -1,12 +1,22 @@
 package fr.kirosnn.dAPI.utils.text.simpletext;
 
-import java.awt.Color;
 import org.jetbrains.annotations.NotNull;
+
+import java.awt.*;
 
 import static fr.kirosnn.dAPI.utils.text.simpletext.ColorUtils.convertHexToBukkit;
 
+/**
+ * The type Effects.
+ */
 public class Effects {
 
+    /**
+     * Apply rainbow effect string.
+     *
+     * @param text the text
+     * @return the string
+     */
     public static @NotNull String applyRainbowEffect(@NotNull String text) {
         Color[] rainbowColors = {
                 new Color(255, 0, 0), new Color(255, 165, 0),
@@ -27,6 +37,14 @@ public class Effects {
         return result.toString();
     }
 
+    /**
+     * Apply gradient effect string.
+     *
+     * @param startHex the start hex
+     * @param endHex   the end hex
+     * @param text     the text
+     * @return the string
+     */
     public static @NotNull String applyGradientEffect(@NotNull String startHex, @NotNull String endHex, @NotNull String text) {
         Color startColor = Color.decode("#" + startHex);
         Color endColor = Color.decode("#" + endHex);
@@ -45,6 +63,13 @@ public class Effects {
         return result + "§r";
     }
 
+    /**
+     * Apply multi gradient effect string.
+     *
+     * @param colors the colors
+     * @param text   the text
+     * @return the string
+     */
     public static @NotNull String applyMultiGradientEffect(@NotNull String colors, @NotNull String text) {
         String[] colorArray = colors.split(":");
         int colorCount = colorArray.length;

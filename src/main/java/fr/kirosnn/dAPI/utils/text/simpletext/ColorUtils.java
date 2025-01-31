@@ -6,8 +6,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Color utils.
+ */
 public class ColorUtils {
 
+    /**
+     * The constant COLOR_MAP.
+     */
     public static final Map<String, String> COLOR_MAP;
 
     static {
@@ -32,6 +38,12 @@ public class ColorUtils {
         COLOR_MAP = Collections.unmodifiableMap(map);
     }
 
+    /**
+     * Convert hex to bukkit string.
+     *
+     * @param hex the hex
+     * @return the string
+     */
     public static @NotNull String convertHexToBukkit(@NotNull String hex) {
         StringBuilder result = new StringBuilder("§x");
         for (char c : hex.toCharArray()) {

@@ -7,14 +7,14 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 /**
- * Utility class for sending global broadcasts in various formats.
+ * The type Broadcast utils.
  */
 public class BroadcastUtils {
 
     /**
-     * Sends a global chat message to all players.
+     * Send global message.
      *
-     * @param message The message to broadcast
+     * @param message the message
      */
     public static void sendGlobalMessage(String message) {
         if (message == null || message.isEmpty()) return;
@@ -24,9 +24,9 @@ public class BroadcastUtils {
     }
 
     /**
-     * Sends a global action bar message to all players.
+     * Send action bar.
      *
-     * @param message The message to display in the action bar
+     * @param message the message
      */
     public static void sendActionBar(String message) {
         if (message == null || message.isEmpty()) return;
@@ -38,13 +38,13 @@ public class BroadcastUtils {
     }
 
     /**
-     * Sends a global title to all players.
+     * Send title.
      *
-     * @param title    The title text
-     * @param subtitle The subtitle text
-     * @param fadeIn   Time in ticks for fade-in
-     * @param stay     Time in ticks for display
-     * @param fadeOut  Time in ticks for fade-out
+     * @param title    the title
+     * @param subtitle the subtitle
+     * @param fadeIn   the fade in
+     * @param stay     the stay
+     * @param fadeOut  the fade out
      */
     public static void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
         String formattedTitle = ChatColor.translateAlternateColorCodes('&', title);
@@ -56,11 +56,11 @@ public class BroadcastUtils {
     }
 
     /**
-     * Sends a global sound effect to all players.
+     * Send global sound.
      *
-     * @param sound   The sound to play
-     * @param volume  Volume level
-     * @param pitch   Pitch level
+     * @param sound  the sound
+     * @param volume the volume
+     * @param pitch  the pitch
      */
     public static void sendGlobalSound(Sound sound, float volume, float pitch) {
         if (sound == null) return;
@@ -71,10 +71,10 @@ public class BroadcastUtils {
     }
 
     /**
-     * Sends a global broadcast with a chat message and optional sound.
+     * Send global announcement.
      *
-     * @param message The chat message to send
-     * @param sound   The sound effect to play (can be null)
+     * @param message the message
+     * @param sound   the sound
      */
     public static void sendGlobalAnnouncement(String message, Sound sound) {
         sendGlobalMessage(message);

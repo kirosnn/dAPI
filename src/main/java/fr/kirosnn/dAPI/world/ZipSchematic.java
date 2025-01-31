@@ -6,9 +6,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Extension of {@link JsonSchematic} that represents a schematic stored in a zip file.
- * This has increased storage efficiency compared to {@link JsonSchematic}, at the cost
- * of readability.
+ * The type Zip schematic.
  */
 public class ZipSchematic extends JsonSchematic {
 

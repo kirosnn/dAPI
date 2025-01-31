@@ -7,17 +7,17 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Utility class for creating advanced hover and click events in chat messages.
+ * The type Hover utils.
  */
 public class HoverUtils {
 
     /**
-     * Sends a chat message with a hover effect on a specific part of the text.
+     * Send hover message.
      *
-     * @param player       The target player
-     * @param message      The full message
-     * @param hoverPart    The part of the message that will have the hover effect
-     * @param hoverMessage The text displayed when hovering over hoverPart
+     * @param player       the player
+     * @param message      the message
+     * @param hoverPart    the hover part
+     * @param hoverMessage the hover message
      */
     public static void sendHoverMessage(Player player, String message, String hoverPart, String hoverMessage) {
         if (player == null || message == null || hoverPart == null || hoverMessage == null) return;
@@ -27,14 +27,14 @@ public class HoverUtils {
     }
 
     /**
-     * Sends a chat message with a hover and click effect on a specific part of the text.
+     * Send hover clickable message.
      *
-     * @param player       The target player
-     * @param message      The full message
-     * @param hoverPart    The part of the message that will have the hover effect
-     * @param hoverMessage The text displayed when hovering over hoverPart
-     * @param clickAction  The type of click action (e.g., "RUN_COMMAND", "OPEN_URL", "SUGGEST_COMMAND")
-     * @param clickValue   The value for the click action (e.g., a command or URL)
+     * @param player       the player
+     * @param message      the message
+     * @param hoverPart    the hover part
+     * @param hoverMessage the hover message
+     * @param clickAction  the click action
+     * @param clickValue   the click value
      */
     public static void sendHoverClickableMessage(Player player, String message, String hoverPart, String hoverMessage, ClickEvent.Action clickAction, String clickValue) {
         if (player == null || message == null || hoverPart == null || hoverMessage == null || clickAction == null || clickValue == null)
@@ -44,16 +44,6 @@ public class HoverUtils {
         player.spigot().sendMessage(finalMessage);
     }
 
-    /**
-     * Builds a message with a hover effect (and optional click effect) on a specific word.
-     *
-     * @param message      The full message
-     * @param hoverPart    The part of the message that will have the hover effect
-     * @param hoverMessage The hover text
-     * @param clickAction  Optional click action (e.g., "RUN_COMMAND", "OPEN_URL")
-     * @param clickValue   Optional click value
-     * @return An array of BaseComponent for sending via Spigot's chat system
-     */
     @Contract("_, _, _, _, _ -> new")
     private static BaseComponent @NotNull [] buildHoverText(String message, String hoverPart, String hoverMessage, ClickEvent.Action clickAction, String clickValue) {
         String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);

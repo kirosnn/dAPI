@@ -12,10 +12,10 @@ import java.util.Base64;
 public class Base64Encoder {
 
     /**
-     * Encodes a string into Base64 format.
+     * Encode string.
      *
-     * @param input The string to encode.
-     * @return The Base64 encoded string.
+     * @param input the input
+     * @return the string
      */
     public static String encode(String input) {
         if (input == null) {
@@ -25,10 +25,10 @@ public class Base64Encoder {
     }
 
     /**
-     * Decodes a Base64 encoded string.
+     * Decode string.
      *
-     * @param base64 The Base64 encoded string to decode.
-     * @return The decoded string.
+     * @param base64 the base 64
+     * @return the string
      */
     @Contract("null -> fail")
     public static @NotNull String decode(String base64) {
@@ -40,10 +40,10 @@ public class Base64Encoder {
     }
 
     /**
-     * Encodes a string into Base64 format with added complexity (e.g., reversing the string before encoding).
+     * Encode with complexity string.
      *
-     * @param input The string to encode.
-     * @return The Base64 encoded string with added complexity.
+     * @param input the input
+     * @return the string
      */
     public static String encodeWithComplexity(String input) {
         if (input == null) {
@@ -54,10 +54,10 @@ public class Base64Encoder {
     }
 
     /**
-     * Decodes a Base64 encoded string with added complexity (e.g., reversing the string after decoding).
+     * Decode with complexity string.
      *
-     * @param base64 The Base64 encoded string to decode.
-     * @return The decoded string with added complexity reversed.
+     * @param base64 the base 64
+     * @return the string
      */
     @Contract("null -> fail")
     public static @NotNull String decodeWithComplexity(String base64) {

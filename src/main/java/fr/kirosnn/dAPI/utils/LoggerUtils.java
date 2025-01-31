@@ -5,52 +5,52 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Utility class for logging.
+ * The type Logger utils.
  */
 public class LoggerUtils {
 
     private final JavaPlugin plugin;
 
     /**
-     * Constructor for LoggerUtils to initialize the plugin.
+     * Instantiates a new Logger utils.
      *
-     * @param plugin The calling plugin
+     * @param plugin the plugin
      */
     public LoggerUtils(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
     /**
-     * Logs an INFO message with a stylized prefix.
+     * Info.
      *
-     * @param message The content of the message
+     * @param message the message
      */
     public void info(@NotNull String message) {
         Bukkit.getServer().getConsoleSender().sendMessage("✦ " + message);
     }
 
     /**
-     * Logs an INFO message from the plugin with a stylized prefix.
+     * Info plugin.
      *
-     * @param message The content of the message
+     * @param message the message
      */
     public void infoPlugin(@NotNull String message) {
         plugin.getServer().getConsoleSender().sendMessage("[" + plugin.getName() + "]" + " ✦ " + message);
     }
 
     /**
-     * Logs a SEVERE (error) message with a stylized prefix.
+     * Error.
      *
-     * @param message The content of the message
+     * @param message the message
      */
     public void error(@NotNull String message) {
         plugin.getLogger().severe("✦ " + message);
     }
 
     /**
-     * Logs a WARNING message with a stylized prefix.
+     * Warn.
      *
-     * @param message The content of the message
+     * @param message the message
      */
     public void warn(@NotNull String message) {
         plugin.getLogger().warning("✦ " + message);

@@ -6,35 +6,35 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Interface for creating subcommands.
+ * The interface Sub command.
  */
 public interface SubCommand {
 
     /**
-     * Executes the subcommand.
+     * Execute boolean.
      *
-     * @param sender The command sender.
-     * @param args   The command arguments.
-     * @return True if the subcommand is valid.
+     * @param sender the sender
+     * @param args   the args
+     * @return the boolean
      */
     boolean execute(CommandSender sender, String[] args);
 
     /**
-     * Auto-completes options for this subcommand.
+     * Tab complete list.
      *
-     * @param sender The command sender.
-     * @param args   The command arguments.
-     * @return A list of available options.
+     * @param sender the sender
+     * @param args   the args
+     * @return the list
      */
     default List<String> tabComplete(CommandSender sender, String[] args) {
         return Collections.emptyList();
     }
 
     /**
-     * Checks if the sender has permission to execute this command.
+     * Has permission boolean.
      *
-     * @param sender The command sender.
-     * @return True if the sender has permission.
+     * @param sender the sender
+     * @return the boolean
      */
     default boolean hasPermission(CommandSender sender) {
         return true;

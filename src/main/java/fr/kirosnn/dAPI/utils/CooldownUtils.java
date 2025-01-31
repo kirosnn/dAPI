@@ -1,23 +1,24 @@
 package fr.kirosnn.dAPI.utils;
 
 import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Utility class for managing global cooldowns.
+ * The type Cooldown utils.
  */
 public class CooldownUtils {
 
     private static final Map<Player, Map<String, Long>> playerCooldowns = new HashMap<>();
 
     /**
-     * Checks if the player has a cooldown for the given action.
+     * Has cooldown boolean.
      *
-     * @param player The player to check
-     * @param action The action (e.g., "tp", "command_name")
-     * @return True if the player has a cooldown, false otherwise
+     * @param player the player
+     * @param action the action
+     * @return the boolean
      */
     public static boolean hasCooldown(Player player, String action) {
         Map<String, Long> cooldowns = playerCooldowns.get(player);
@@ -32,11 +33,11 @@ public class CooldownUtils {
     }
 
     /**
-     * Gets the remaining time for a cooldown in seconds.
+     * Gets remaining time.
      *
-     * @param player The player to check
-     * @param action The action (e.g., "tp", "command_name")
-     * @return The remaining time in seconds
+     * @param player the player
+     * @param action the action
+     * @return the remaining time
      */
     public static long getRemainingTime(Player player, String action) {
         if (!hasCooldown(player, action)) return 0;
@@ -49,11 +50,11 @@ public class CooldownUtils {
     }
 
     /**
-     * Sets a cooldown for a specific action for the player.
+     * Sets cooldown.
      *
-     * @param player  The player to set the cooldown for
-     * @param action  The action (e.g., "tp", "command_name")
-     * @param seconds The cooldown time in seconds
+     * @param player  the player
+     * @param action  the action
+     * @param seconds the seconds
      */
     public static void setCooldown(Player player, String action, long seconds) {
         playerCooldowns.putIfAbsent(player, new HashMap<>());
@@ -64,10 +65,10 @@ public class CooldownUtils {
     }
 
     /**
-     * Clears the cooldown for a specific action for the player.
+     * Clear cooldown.
      *
-     * @param player The player to remove the cooldown from
-     * @param action The action to remove the cooldown for
+     * @param player the player
+     * @param action the action
      */
     public static void clearCooldown(Player player, String action) {
         if (playerCooldowns.containsKey(player)) {
@@ -76,9 +77,9 @@ public class CooldownUtils {
     }
 
     /**
-     * Clears all cooldowns for a specific player.
+     * Clear all cooldowns.
      *
-     * @param player The player to clear all cooldowns for
+     * @param player the player
      */
     public static void clearAllCooldowns(Player player) {
         playerCooldowns.remove(player);

@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.*;
 
 /**
- * YAML file handler utility class.
+ * The type Yaml file.
  */
 public class YamlFile {
 
@@ -21,11 +21,11 @@ public class YamlFile {
     private FileConfiguration configuration;
 
     /**
-     * Constructor for the YAML file manager.
+     * Instantiates a new Yaml file.
      *
-     * @param plugin     Bukkit/Spigot plugin
-     * @param folderPath Relative folder path inside the plugin directory (null or empty for the root folder)
-     * @param fileName   YAML file name (e.g., "config.yml")
+     * @param plugin     the plugin
+     * @param folderPath the folder path
+     * @param fileName   the file name
      */
     public YamlFile(@NotNull JavaPlugin plugin, String folderPath, String fileName) {
         this.plugin = plugin;
@@ -57,12 +57,12 @@ public class YamlFile {
     }
 
     /**
-     * Retrieves a value from the YAML file.
+     * Get t.
      *
      * @param <T>          the type parameter
-     * @param path         Key path
-     * @param defaultValue Default value if the key does not exist
-     * @return Value associated with the key or the default value
+     * @param path         the path
+     * @param defaultValue the default value
+     * @return the t
      */
     public <T> T get(String path, T defaultValue) {
         if (configuration.contains(path)) {
@@ -72,13 +72,12 @@ public class YamlFile {
     }
 
     /**
-     * Retrieves a value from the YAML file, translates color codes (§ to &)
-     * and replaces placeholders.
+     * Gets translated.
      *
-     * @param path         Key path
-     * @param defaultValue Default value if the key does not exist
-     * @param placeholders Map of placeholders to replace in the value
-     * @return Translated value with placeholders replaced or the default value
+     * @param path         the path
+     * @param defaultValue the default value
+     * @param placeholders the placeholders
+     * @return the translated
      */
     public String getTranslated(String path, String defaultValue, Map<String, String> placeholders) {
         String value = get(path, defaultValue);
@@ -95,23 +94,23 @@ public class YamlFile {
     }
 
     /**
-     * Retrieves a list of elements from the YAML file.
+     * Gets list.
      *
-     * @param <T>  Type of elements in the list
-     * @param path Key path
-     * @return List of elements or null if absent
+     * @param <T>  the type parameter
+     * @param path the path
+     * @return the list
      */
     public <T> List<T> getList(String path) {
         return (List<T>) configuration.getList(path);
     }
 
     /**
-     * Retrieves a list of elements from the YAML file with a default value.
+     * Gets list.
      *
      * @param <T>          the type parameter
-     * @param path         Key path
-     * @param defaultValue Default value if the key does not exist
-     * @return List of elements or the default value
+     * @param path         the path
+     * @param defaultValue the default value
+     * @return the list
      */
     public <T> List<T> getList(String path, List<T> defaultValue) {
         List<T> list = (List<T>) configuration.getList(path);
@@ -119,11 +118,11 @@ public class YamlFile {
     }
 
     /**
-     * Retrieves a set of child keys for a given path.
+     * Gets keys.
      *
-     * @param path     Key path
-     * @param deepMode If true, includes subkeys recursively
-     * @return Set of child keys
+     * @param path     the path
+     * @param deepMode the deep mode
+     * @return the keys
      */
     public Set<String> getKeys(String path, boolean deepMode) {
         return configuration.getConfigurationSection(path) != null
@@ -132,24 +131,24 @@ public class YamlFile {
     }
 
     /**
-     * Sets a value in the YAML file.
+     * Set.
      *
-     * @param path  Key path
-     * @param value Value to set
+     * @param path  the path
+     * @param value the value
      */
     public void set(String path, Object value) {
         configuration.set(path, value);
     }
 
     /**
-     * Reloads the YAML file from disk.
+     * Reload.
      */
     public void reload() {
         configuration = YamlConfiguration.loadConfiguration(file);
     }
 
     /**
-     * Saves the current configuration to the file.
+     * Save.
      */
     public void save() {
         try {
@@ -160,38 +159,38 @@ public class YamlFile {
     }
 
     /**
-     * Retrieves the raw configuration.
+     * Gets config.
      *
-     * @return Associated FileConfiguration
+     * @return the config
      */
     public FileConfiguration getConfig() {
         return configuration;
     }
 
     /**
-     * Checks if a key exists in the YAML file.
+     * Contains boolean.
      *
-     * @param path Key path
-     * @return True if the key exists, otherwise False
+     * @param path the path
+     * @return the boolean
      */
     public boolean contains(String path) {
         return configuration.contains(path);
     }
 
     /**
-     * Check if a file exists.
+     * Exists boolean.
      *
-     * @return boolean
+     * @return the boolean
      */
     public boolean exists() {
         return file.exists() && configuration != null;
     }
 
     /**
-     * Retrieves a configuration section for a given path.
+     * Gets configuration section.
      *
-     * @param path Path to the section
-     * @return Associated ConfigurationSection or null if nonexistent
+     * @param path the path
+     * @return the configuration section
      */
     public ConfigurationSection getConfigurationSection(String path) {
         return configuration.getConfigurationSection(path);

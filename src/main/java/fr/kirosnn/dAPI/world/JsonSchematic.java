@@ -15,15 +15,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Default {@link Schematic} implementation.
- * Starting from the minimum location, the blocks are concatenated into a string, until the maximum location is reached.
- * Each block is represented by a character. This character refers to a specific index in the palette.
+ * The type Json schematic.
  */
 public class JsonSchematic implements FileType {
 
     private static final int START = '#';
     private int currentChar = START - 1;
 
+    /**
+     * The Gson.
+     */
     static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
@@ -46,9 +47,21 @@ public class JsonSchematic implements FileType {
     @Expose
     private Map<String, List<String>> waypoints;
 
+    /**
+     * Instantiates a new Json schematic.
+     */
     public JsonSchematic() {
     }
 
+    /**
+     * Instantiates a new Json schematic.
+     *
+     * @param dataVersion      the data version
+     * @param minecraftVersion the minecraft version
+     * @param dimensions       the dimensions
+     * @param palette          the palette
+     * @param blocks           the blocks
+     */
     public JsonSchematic(int dataVersion, String minecraftVersion, List<Integer> dimensions, List<String> palette, String blocks) {
         this.dataVersion = dataVersion;
         this.minecraftVersion = minecraftVersion;
@@ -58,6 +71,16 @@ public class JsonSchematic implements FileType {
         this.waypoints = new HashMap<>();
     }
 
+    /**
+     * Instantiates a new Json schematic.
+     *
+     * @param dataVersion      the data version
+     * @param minecraftVersion the minecraft version
+     * @param dimensions       the dimensions
+     * @param palette          the palette
+     * @param blocks           the blocks
+     * @param waypoints        the waypoints
+     */
     public JsonSchematic(int dataVersion, String minecraftVersion, List<Integer> dimensions, List<String> palette, String blocks, Map<String, List<String>> waypoints) {
         this.dataVersion = dataVersion;
         this.minecraftVersion = minecraftVersion;
@@ -98,6 +121,13 @@ public class JsonSchematic implements FileType {
         return true;
     }
 
+    /**
+     * Write.
+     *
+     * @param file the file
+     * @param type the type
+     * @throws IOException the io exception
+     */
     void write(File file, JsonSchematic type) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             GSON.toJson(type, writer);
@@ -147,13 +177,26 @@ public class JsonSchematic implements FileType {
         }
     }
 
+    /**
+     * Read json schematic.
+     *
+     * @param file the file
+     * @return the json schematic
+     * @throws IOException the io exception
+     */
     JsonSchematic read(File file) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             return GSON.fromJson(reader, JsonSchematic.class);
         }
     }
 
-    // Avoids control chars
+    /**
+     * Gets char.
+     *
+     * @param id the id
+     * @return the char
+     */
+// Avoids control chars
     String getChar(short id) {
         return chars.computeIfAbsent(id, it -> {
             do {
@@ -164,6 +207,12 @@ public class JsonSchematic implements FileType {
         });
     }
 
+    /**
+     * From char short.
+     *
+     * @param c the c
+     * @return the short
+     */
     short fromChar(char c) {
         return controls.computeIfAbsent(c, it -> {
             int controlSince = 0;
