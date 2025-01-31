@@ -135,12 +135,17 @@ public class Schematic {
         World world = targetLocation.getWorld();
         JavaPlugin plugin = JavaPlugin.getProvidingPlugin(getClass());
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            for (int i = 0; i < blockDataList.size(); i++) {
-                final BlockData blockData = blockDataList.get(i);
-                final int delay = i / 100;
+        int offsetX = targetLocation.getBlockX() - origin.getBlockX();
+        int offsetY = targetLocation.getBlockY() - origin.getBlockY();
+        int offsetZ = targetLocation.getBlockZ() - origin.getBlockZ();
 
-                Bukkit.getScheduler().runTaskLater(plugin, () -> blockData.paste(targetLocation, applyPhysics), delay);
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            for (BlockData blockData : blockDataList) {
+                Location newLocation = new Location(world,
+                        blockData.getX() + offsetX,
+                        blockData.getY() + offsetY,
+                        blockData.getZ() + offsetZ);
+                blockData.paste(newLocation, applyPhysics);
             }
         });
     }

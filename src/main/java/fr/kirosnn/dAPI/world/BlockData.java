@@ -3,8 +3,10 @@ package fr.kirosnn.dAPI.world;
 import com.google.gson.JsonObject;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 
 public class BlockData {
@@ -55,5 +57,17 @@ public class BlockData {
 
     public Material getMaterial() {
         return material;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
     }
 }
