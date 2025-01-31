@@ -78,12 +78,18 @@ public class JsonSchematic implements FileType {
 
         Vector dimensionVector = schematic.getDimensions().subtract(new Vector(1, 1, 1));
         List<Integer> dimensions = List.of(dimensionVector.getBlockX(), dimensionVector.getBlockY(), dimensionVector.getBlockZ());
-        List<String> palette = schematic.getPalette().stream().map(it -> it.getAsString(true)).collect(Collectors.toList());
-        String serializedBlocks = String.join("", schematic.getBlocks().stream().map(this::getChar).collect(Collectors.toList()));
+        List<String> palette = schematic.getPalette().stream()
+                .map(it -> it.getAsString(true))
+                .collect(Collectors.toList());
+        String serializedBlocks = String.join("", schematic.getBlocks().stream()
+                .map(this::getChar)
+                .collect(Collectors.toList()));
         Map<String, List<String>> waypoints = schematic.getWaypoints().entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-                        .map(it -> it.getX() + "," + it.getY() + "," + it.getZ() + "," + it.getYaw() + "," + it.getPitch())
-                        .collect(Collectors.toList())));
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream()
+                                .map(it -> it.getX() + "," + it.getY() + "," + it.getZ() + "," + it.getYaw() + "," + it.getPitch())
+                                .collect(Collectors.toList())));
 
         JsonSchematic jsonSchematic = new JsonSchematic(schematic.getDataVersion(), schematic.getMinecraftVersion(),
                 dimensions, palette, serializedBlocks, waypoints);
@@ -118,7 +124,7 @@ public class JsonSchematic implements FileType {
             List<String> unparsedPalette = serialized.palette;
 
             List<BlockData> palette = unparsedPalette.stream()
-                    .map(data -> (BlockData) Bukkit.createBlockData(data))
+                    .map(Bukkit::createBlockData)
                     .collect(Collectors.toList());
 
             Vector dimensions = new Vector(serialized.dimensions.get(0),
@@ -162,7 +168,7 @@ public class JsonSchematic implements FileType {
                 currentChar++;
             } while (Character.isISOControl(currentChar));
 
-            return Character.toString(currentChar);
+            return Character.toString((char) currentChar);
         });
     }
 
