@@ -90,13 +90,11 @@ public class YamlFile {
             placeholders = Collections.emptyMap();
         }
 
-        // Remplacement des placeholders avant de parser la chaîne
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            String key = "\\{" + entry.getKey() + "\\}"; // Exemple: {name}
+            String key = "\\{" + entry.getKey() + "\\}";
             value = value.replaceAll(key, entry.getValue());
         }
 
-        // Toujours utiliser SimpleTextParser pour traitement final
         return SimpleTextParser.parse(value);
     }
 
