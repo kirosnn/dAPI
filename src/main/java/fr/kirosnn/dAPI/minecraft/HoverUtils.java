@@ -1,7 +1,7 @@
 package fr.kirosnn.dAPI.minecraft;
 
+import fr.kirosnn.dAPI.utils.text.simpletext.SimpleTextParser;
 import net.md_5.bungee.api.chat.*;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -12,12 +12,12 @@ import org.jetbrains.annotations.NotNull;
 public class HoverUtils {
 
     /**
-     * Send hover message.
+     * Sends a hover message to a player.
      *
-     * @param player       the player
-     * @param message      the message
-     * @param hoverPart    the hover part
-     * @param hoverMessage the hover message
+     * @param player       The player receiving the message.
+     * @param message      The full message.
+     * @param hoverPart    The part of the message that will have a hover effect.
+     * @param hoverMessage The hover text that appears when hovering over {@code hoverPart}.
      */
     public static void sendHoverMessage(Player player, String message, String hoverPart, String hoverMessage) {
         if (player == null || message == null || hoverPart == null || hoverMessage == null) return;
@@ -27,14 +27,14 @@ public class HoverUtils {
     }
 
     /**
-     * Send hover clickable message.
+     * Sends a hoverable and clickable message to a player.
      *
-     * @param player       the player
-     * @param message      the message
-     * @param hoverPart    the hover part
-     * @param hoverMessage the hover message
-     * @param clickAction  the click action
-     * @param clickValue   the click value
+     * @param player       The player receiving the message.
+     * @param message      The full message.
+     * @param hoverPart    The part of the message that will have a hover effect.
+     * @param hoverMessage The hover text that appears when hovering over {@code hoverPart}.
+     * @param clickAction  The click action (e.g., OPEN_URL, RUN_COMMAND).
+     * @param clickValue   The value associated with the click action.
      */
     public static void sendHoverClickableMessage(Player player, String message, String hoverPart, String hoverMessage, ClickEvent.Action clickAction, String clickValue) {
         if (player == null || message == null || hoverPart == null || hoverMessage == null || clickAction == null || clickValue == null)
@@ -44,10 +44,20 @@ public class HoverUtils {
         player.spigot().sendMessage(finalMessage);
     }
 
+    /**
+     * Builds a message with a hover and optional click event.
+     *
+     * @param message      The full message.
+     * @param hoverPart    The part of the message that will have hover effects.
+     * @param hoverMessage The hover text.
+     * @param clickAction  The click event type (optional).
+     * @param clickValue   The value for the click event (optional).
+     * @return An array of {@link BaseComponent} containing the formatted message.
+     */
     @Contract("_, _, _, _, _ -> new")
     private static BaseComponent @NotNull [] buildHoverText(String message, String hoverPart, String hoverMessage, ClickEvent.Action clickAction, String clickValue) {
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
-        String formattedHover = ChatColor.translateAlternateColorCodes('&', hoverMessage);
+        String formattedMessage = SimpleTextParser.parse(message);
+        String formattedHover = SimpleTextParser.parse(hoverMessage);
 
         TextComponent fullMessage = new TextComponent("");
 

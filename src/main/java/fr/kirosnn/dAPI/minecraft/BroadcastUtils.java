@@ -1,8 +1,8 @@
 package fr.kirosnn.dAPI.minecraft;
 
+import fr.kirosnn.dAPI.utils.text.simpletext.SimpleTextParser;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -12,43 +12,43 @@ import org.bukkit.entity.Player;
 public class BroadcastUtils {
 
     /**
-     * Send global message.
+     * Sends a global chat message.
      *
-     * @param message the message
+     * @param message The message to send.
      */
     public static void sendGlobalMessage(String message) {
         if (message == null || message.isEmpty()) return;
 
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
+        String formattedMessage = SimpleTextParser.parse(message);
         Bukkit.broadcastMessage(formattedMessage);
     }
 
     /**
-     * Send action bar.
+     * Sends an action bar message to all online players.
      *
-     * @param message the message
+     * @param message The message to send.
      */
     public static void sendActionBar(String message) {
         if (message == null || message.isEmpty()) return;
 
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
+        String formattedMessage = SimpleTextParser.parse(message);
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(formattedMessage));
         }
     }
 
     /**
-     * Send title.
+     * Sends a title to all online players.
      *
-     * @param title    the title
-     * @param subtitle the subtitle
-     * @param fadeIn   the fade in
-     * @param stay     the stay
-     * @param fadeOut  the fade out
+     * @param title    The title.
+     * @param subtitle The subtitle.
+     * @param fadeIn   The fade-in time.
+     * @param stay     The stay duration.
+     * @param fadeOut  The fade-out time.
      */
     public static void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-        String formattedTitle = ChatColor.translateAlternateColorCodes('&', title);
-        String formattedSubtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
+        String formattedTitle = SimpleTextParser.parse(title);
+        String formattedSubtitle = SimpleTextParser.parse(subtitle);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendTitle(formattedTitle, formattedSubtitle, fadeIn, stay, fadeOut);
@@ -56,11 +56,11 @@ public class BroadcastUtils {
     }
 
     /**
-     * Send global sound.
+     * Plays a global sound for all online players.
      *
-     * @param sound  the sound
-     * @param volume the volume
-     * @param pitch  the pitch
+     * @param sound  The sound to play.
+     * @param volume The volume.
+     * @param pitch  The pitch.
      */
     public static void sendGlobalSound(Sound sound, float volume, float pitch) {
         if (sound == null) return;
@@ -71,10 +71,10 @@ public class BroadcastUtils {
     }
 
     /**
-     * Send global announcement.
+     * Sends a global announcement with a message and optional sound.
      *
-     * @param message the message
-     * @param sound   the sound
+     * @param message The announcement message.
+     * @param sound   The sound to play (can be null).
      */
     public static void sendGlobalAnnouncement(String message, Sound sound) {
         sendGlobalMessage(message);

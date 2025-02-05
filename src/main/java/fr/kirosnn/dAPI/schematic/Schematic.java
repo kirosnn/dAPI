@@ -1,4 +1,4 @@
-package fr.kirosnn.dAPI.world;
+package fr.kirosnn.dAPI.schematic;
 
 import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;

@@ -1,4 +1,4 @@
-package fr.kirosnn.dAPI.world;
+package fr.kirosnn.dAPI.schematic;
 
 import java.io.*;
 import java.util.zip.ZipEntry;
@@ -25,14 +25,16 @@ public class ZipSchematic extends JsonSchematic {
 
     @Override
     JsonSchematic read(File file) throws IOException {
-        try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file));
-             BufferedReader reader = new BufferedReader(new InputStreamReader(zipInputStream))) {
-            ZipEntry entry = zipInputStream.getNextEntry();
-            if (entry == null) {
-                throw new IOException("No entries in zip file");
+        try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file))) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                if (entry.getName().equals("schematic.json")) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(zipInputStream))) {
+                        return GSON.fromJson(reader, JsonSchematic.class);
+                    }
+                }
             }
-
-            return GSON.fromJson(reader, JsonSchematic.class);
+            throw new IOException("No valid schematic.json found in zip file");
         }
     }
 }

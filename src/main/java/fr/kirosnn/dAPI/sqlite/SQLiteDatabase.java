@@ -6,9 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.logging.Level;
 
 /**
- * The type Sq lite database.
+ * A simple SQLite database manager for Bukkit plugins.
  */
 public class SQLiteDatabase {
 
@@ -17,127 +18,152 @@ public class SQLiteDatabase {
     private final Plugin plugin;
 
     /**
-     * Instantiates a new Sq lite database.
+     * Initializes a new SQLite database.
      *
-     * @param plugin the plugin
-     * @param dbName the db name
-     * @throws IOException the io exception
+     * @param plugin the Bukkit plugin
+     * @param dbName the name of the database file
+     * @throws IOException if the file creation fails
      */
-    public SQLiteDatabase(@NotNull Plugin plugin, String dbName) throws IOException {
+    public SQLiteDatabase(@NotNull Plugin plugin, @NotNull String dbName) throws IOException {
         this.plugin = plugin;
 
         File databaseFolder = new File(plugin.getDataFolder(), "databases");
-        if (!databaseFolder.exists()) {
-            databaseFolder.mkdirs();
-            plugin.getLogger().info("The folder " + databaseFolder.getPath() + " has been created.");
+        if (!databaseFolder.exists() && databaseFolder.mkdirs()) {
+            plugin.getLogger().info("Created 'databases' folder: " + databaseFolder.getPath());
         }
 
         this.databaseFile = new File(databaseFolder, dbName);
-        if (!this.databaseFile.exists()) {
-            if (this.databaseFile.createNewFile()) {
-                plugin.getLogger().info("The file " + dbName + " did not exist and has been created.");
-            } else {
-                throw new IOException("Failed to create the database file: " + dbName);
-            }
-        } else {
-            plugin.getLogger().info("The file " + dbName + " already exists.");
+        if (!this.databaseFile.exists() && this.databaseFile.createNewFile()) {
+            plugin.getLogger().info("Created new SQLite database file: " + dbName);
         }
     }
 
     /**
-     * Connect.
-     *
-     * @throws SQLException the sql exception
+     * Establishes a connection to the database.
      */
-    public void connect() throws SQLException {
-        if (this.connection != null && !this.connection.isClosed()) {
-            return;
-        }
-        plugin.getLogger().info("Connecting to the database...");
-        this.connection = DriverManager.getConnection("jdbc:sqlite:" + databaseFile.getAbsolutePath());
-        plugin.getLogger().info("Successfully connected to the database.");
-    }
+    public synchronized void connect() {
+        if (isConnected()) return;
 
-    /**
-     * Reconnect.
-     *
-     * @throws SQLException the sql exception
-     */
-    public void reconnect() throws SQLException {
-        if (this.connection != null && !this.connection.isClosed()) {
-            return;
-        }
-        this.connection = DriverManager.getConnection("jdbc:sqlite:" + databaseFile.getAbsolutePath());
-    }
-
-    /**
-     * Ensure connection.
-     *
-     * @throws SQLException the sql exception
-     */
-    public void ensureConnection() throws SQLException {
-        if (this.connection == null || this.connection.isClosed()) {
-            reconnect();
+        try {
+            plugin.getLogger().info("Connecting to the SQLite database...");
+            this.connection = DriverManager.getConnection("jdbc:sqlite:" + databaseFile.getAbsolutePath());
+            plugin.getLogger().info("Successfully connected to the database.");
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to connect to the database!", e);
         }
     }
 
     /**
-     * Close.
-     *
-     * @throws SQLException the sql exception
+     * Closes the database connection.
      */
-    public void close() throws SQLException {
-        if (this.connection != null && !this.connection.isClosed()) {
-            plugin.getLogger().info("Closing database connection...");
-            this.connection.close();
+    public synchronized void close() {
+        if (!isConnected()) return;
+
+        try {
+            plugin.getLogger().info("Closing SQLite database connection...");
+            connection.close();
+            connection = null;
             plugin.getLogger().info("Database connection closed successfully.");
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error closing the database connection!", e);
         }
     }
 
     /**
-     * Execute update.
+     * Checks if the database is connected.
      *
-     * @param query the query
-     * @throws SQLException the sql exception
+     * @return true if connected, false otherwise
      */
-    public void executeUpdate(String query) throws SQLException {
-        ensureConnection();
-        try (PreparedStatement statement = this.connection.prepareStatement(query)) {
+    public boolean isConnected() {
+        try {
+            return connection != null && !connection.isClosed();
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Executes an SQL update query (INSERT, UPDATE, DELETE).
+     *
+     * @param query the SQL query
+     */
+    public synchronized void executeUpdate(@NotNull String query) {
+        if (!isConnected()) connect();
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error executing UPDATE query: " + query, e);
         }
     }
 
     /**
-     * Execute query result set.
+     * Executes an SQL query and returns a `ResultSet`.
+     * **⚠ IMPORTANT:** Make sure to close the `ResultSet` after use.
      *
-     * @param query the query
-     * @return the result set
-     * @throws SQLException the sql exception
+     * @param query the SQL query
+     * @return a ResultSet containing the query results
      */
-    public ResultSet executeQuery(String query) throws SQLException {
-        ensureConnection();
-        PreparedStatement statement = this.connection.prepareStatement(query);
-        return statement.executeQuery();
+    public synchronized ResultSet executeQuery(@NotNull String query) {
+        if (!isConnected()) connect();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            return statement.executeQuery();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error executing SELECT query: " + query, e);
+            return null;
+        }
     }
 
     /**
-     * Gets connection.
+     * Retrieves the current database connection.
      *
-     * @return the connection
-     * @throws SQLException the sql exception
+     * @return the Connection object
      */
-    public Connection getConnection() throws SQLException {
-        ensureConnection();
-        return this.connection;
+    public Connection getConnection() {
+        if (!isConnected()) connect();
+        return connection;
     }
 
     /**
-     * Is connected boolean.
-     *
-     * @return the boolean
-     * @throws SQLException the sql exception
+     * Begins an SQL transaction.
      */
-    public boolean isConnected() throws SQLException {
-        return this.connection != null && !this.connection.isClosed();
+    public synchronized void beginTransaction() {
+        if (!isConnected()) connect();
+
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to begin transaction!", e);
+        }
+    }
+
+    /**
+     * Commits the current transaction.
+     */
+    public synchronized void commitTransaction() {
+        if (!isConnected()) return;
+
+        try {
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error committing transaction!", e);
+        }
+    }
+
+    /**
+     * Rolls back the current transaction.
+     */
+    public synchronized void rollbackTransaction() {
+        if (!isConnected()) return;
+
+        try {
+            connection.rollback();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Error rolling back transaction!", e);
+        }
     }
 }

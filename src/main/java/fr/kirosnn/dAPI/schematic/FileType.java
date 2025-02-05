@@ -1,4 +1,4 @@
-package fr.kirosnn.dAPI.world;
+package fr.kirosnn.dAPI.schematic;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

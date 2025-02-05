@@ -1,7 +1,7 @@
 package fr.kirosnn.dAPI.scoreboard;
 
+import fr.kirosnn.dAPI.utils.text.simpletext.SimpleTextParser;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
  */
 public class ScoreboardAPI {
 
-    private final Map<Player, PlayerScoreboard> playerScoreboards = new HashMap<>();
+    private final Map<UUID, PlayerScoreboard> playerScoreboards = new HashMap<>();
     private final JavaPlugin plugin;
-    private int updateTaskId;
+    private int updateTaskId = -1;
 
     /**
      * Instantiates a new Scoreboard api.
@@ -37,15 +37,16 @@ public class ScoreboardAPI {
      * @param title  the title
      * @param lines  the lines
      */
-    public void setScoreboard(Player player, String title, @NotNull List<String> lines) {
-        PlayerScoreboard scoreboard = playerScoreboards.computeIfAbsent(player, PlayerScoreboard::new);
+    public void setScoreboard(@NotNull Player player, String title, @NotNull List<String> lines) {
+        if (!player.isOnline()) return;
+
+        UUID playerId = player.getUniqueId();
+        PlayerScoreboard scoreboard = playerScoreboards.computeIfAbsent(playerId, id -> new PlayerScoreboard(player));
+
         scoreboard.setTitle(title);
-
-        List<String> parsedLines = lines.stream()
-                .map(line -> line.replace("%player_name%", player.getName()))
-                .collect(Collectors.toList());
-
-        scoreboard.setLines(parsedLines);
+        scoreboard.setLines(lines.stream()
+                .map(line -> SimpleTextParser.parse(line.replace("%player_name%", player.getName())))
+                .collect(Collectors.toList()));
         scoreboard.update();
     }
 
@@ -54,8 +55,8 @@ public class ScoreboardAPI {
      *
      * @param player the player
      */
-    public void removeScoreboard(Player player) {
-        PlayerScoreboard scoreboard = playerScoreboards.remove(player);
+    public void removeScoreboard(@NotNull Player player) {
+        PlayerScoreboard scoreboard = playerScoreboards.remove(player.getUniqueId());
         if (scoreboard != null) {
             scoreboard.clear();
         }
@@ -78,6 +79,7 @@ public class ScoreboardAPI {
      */
     public void startAutoUpdate(int interval, String title, List<String> lines) {
         stopAutoUpdate();
+
         updateTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 setScoreboard(player, title, lines);
@@ -89,9 +91,9 @@ public class ScoreboardAPI {
      * Stop auto update.
      */
     public void stopAutoUpdate() {
-        if (updateTaskId != 0) {
+        if (updateTaskId != -1) {
             Bukkit.getScheduler().cancelTask(updateTaskId);
-            updateTaskId = 0;
+            updateTaskId = -1;
         }
     }
 
@@ -99,18 +101,18 @@ public class ScoreboardAPI {
 
         private final Scoreboard scoreboard;
         private final Objective objective;
-        private final List<String> lines;
+        private final LinkedHashSet<String> lines;
 
         /**
          * Instantiates a new Player scoreboard.
          *
          * @param player the player
          */
-        public PlayerScoreboard(Player player) {
+        public PlayerScoreboard(@NotNull Player player) {
             this.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-            this.objective = scoreboard.registerNewObjective("main", "dummy", ChatColor.RESET + "");
+            this.objective = scoreboard.registerNewObjective("main", "dummy", SimpleTextParser.parse("Scoreboard"));
             this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-            this.lines = new ArrayList<>();
+            this.lines = new LinkedHashSet<>();
             player.setScoreboard(scoreboard);
         }
 
@@ -120,7 +122,7 @@ public class ScoreboardAPI {
          * @param title the title
          */
         public void setTitle(String title) {
-            objective.setDisplayName(ChatColor.translateAlternateColorCodes('&', title));
+            objective.setDisplayName(SimpleTextParser.parse(title));
         }
 
         /**
@@ -138,9 +140,9 @@ public class ScoreboardAPI {
          */
         public void update() {
             clear();
-            for (int i = 0; i < lines.size(); i++) {
-                String line = ChatColor.translateAlternateColorCodes('&', lines.get(i));
-                objective.getScore(line).setScore(lines.size() - i);
+            int score = lines.size();
+            for (String line : lines) {
+                objective.getScore(SimpleTextParser.parse(line)).setScore(score--);
             }
         }
 
@@ -149,6 +151,7 @@ public class ScoreboardAPI {
          */
         public void clear() {
             scoreboard.getEntries().forEach(scoreboard::resetScores);
+            objective.unregister();
         }
     }
 }

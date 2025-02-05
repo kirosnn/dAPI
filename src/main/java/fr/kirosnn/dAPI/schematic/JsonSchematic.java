@@ -1,4 +1,4 @@
-package fr.kirosnn.dAPI.world;
+package fr.kirosnn.dAPI.schematic;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -196,7 +196,6 @@ public class JsonSchematic implements FileType {
      * @param id the id
      * @return the char
      */
-// Avoids control chars
     String getChar(short id) {
         return chars.computeIfAbsent(id, it -> {
             do {
