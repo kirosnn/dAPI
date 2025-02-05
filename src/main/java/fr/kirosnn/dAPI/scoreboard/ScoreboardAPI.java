@@ -47,7 +47,11 @@ public class ScoreboardAPI {
         scoreboard.setLines(lines.stream()
                 .map(line -> SimpleTextParser.parse(line.replace("%player_name%", player.getName())))
                 .collect(Collectors.toList()));
-        scoreboard.update();
+
+        // Vérifier si le scoreboard est encore valide avant d'appeler update()
+        if (scoreboard.isValid()) {
+            scoreboard.update();
+        }
     }
 
     /**
@@ -100,7 +104,7 @@ public class ScoreboardAPI {
     private static class PlayerScoreboard {
 
         private final Scoreboard scoreboard;
-        private final Objective objective;
+        private Objective objective;
         private final LinkedHashSet<String> lines;
 
         /**
@@ -110,10 +114,20 @@ public class ScoreboardAPI {
          */
         public PlayerScoreboard(@NotNull Player player) {
             this.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-            this.objective = scoreboard.registerNewObjective("main", "dummy", SimpleTextParser.parse("Scoreboard"));
-            this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            this.objective = createObjective();
             this.lines = new LinkedHashSet<>();
             player.setScoreboard(scoreboard);
+        }
+
+        /**
+         * Creates a new objective.
+         *
+         * @return the objective
+         */
+        private Objective createObjective() {
+            Objective obj = scoreboard.registerNewObjective("main", "dummy", SimpleTextParser.parse("Scoreboard"));
+            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+            return obj;
         }
 
         /**
@@ -122,7 +136,9 @@ public class ScoreboardAPI {
          * @param title the title
          */
         public void setTitle(String title) {
-            objective.setDisplayName(SimpleTextParser.parse(title));
+            if (objective != null) {
+                objective.setDisplayName(SimpleTextParser.parse(title));
+            }
         }
 
         /**
@@ -139,6 +155,10 @@ public class ScoreboardAPI {
          * Update.
          */
         public void update() {
+            if (!isValid()) {
+                objective = createObjective(); // Recréer l'objectif s'il a été supprimé
+            }
+
             clear();
             int score = lines.size();
             for (String line : lines) {
@@ -147,11 +167,19 @@ public class ScoreboardAPI {
         }
 
         /**
+         * Vérifie si l'objectif est encore valide.
+         *
+         * @return true si valide, sinon false
+         */
+        public boolean isValid() {
+            return objective != null && scoreboard.getObjective("main") != null;
+        }
+
+        /**
          * Clear.
          */
         public void clear() {
             scoreboard.getEntries().forEach(scoreboard::resetScores);
-            objective.unregister();
         }
     }
 }
