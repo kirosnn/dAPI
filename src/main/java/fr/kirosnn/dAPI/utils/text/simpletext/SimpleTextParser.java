@@ -59,6 +59,14 @@ public class SimpleTextParser {
         matcher.appendTail(buffer);
         parsedText = buffer.toString();
 
+        buffer.setLength(0);
+        matcher = Patterns.BOLD_PATTERN.matcher(parsedText);
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, "§l" + matcher.group(1));
+        }
+        matcher.appendTail(buffer);
+        parsedText = buffer.toString();
+
         return parsedText.replace("&", "§").replaceAll(Patterns.CLOSE_TAG_PATTERN.pattern(), "§r");
     }
 }

@@ -30,4 +30,8 @@ public class Patterns {
      * The constant MULTI_GRADIENT_PATTERN.
      */
     public static final Pattern MULTI_GRADIENT_PATTERN = Pattern.compile("<gradient:((?:#?[A-Fa-f0-9]{6}:?)+)>(.*?)</gradient>");
+    /**
+     * The constant BOLD_PATTERN.
+     */
+    public static final Pattern BOLD_PATTERN = Pattern.compile("<bold>(.*?)</bold>");
 }
