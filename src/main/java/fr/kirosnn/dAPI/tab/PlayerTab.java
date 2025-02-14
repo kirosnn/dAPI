@@ -1,6 +1,7 @@
 package fr.kirosnn.dAPI.tab;
 
 import fr.kirosnn.dAPI.utils.text.simpletext.SimpleTextParser;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,7 +91,17 @@ public class PlayerTab {
         return Class.forName("net.minecraft.server." + getServerVersion() + "." + name);
     }
 
-    private String getServerVersion() {
-        return player.getServer().getClass().getPackage().getName().split("\\.")[3];
+    private @NotNull String getServerVersion() {
+        String[] versionParts = Bukkit.getServer().getBukkitVersion().split("\\.");
+
+        if (versionParts.length < 3) {
+            return "unknown";
+        }
+
+        String major = versionParts[0];
+        String minor = versionParts[1];
+        String patch = versionParts.length >= 3 ? versionParts[2].split("-")[0] : "0";
+
+        return major + "." + minor + "." + patch;
     }
 }
