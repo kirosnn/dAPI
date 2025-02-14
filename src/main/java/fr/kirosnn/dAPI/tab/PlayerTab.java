@@ -5,10 +5,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.logging.Level;
 
 /**
- * The type Player tab.
+ * Classe PlayerTab pour gérer le header et footer du menu Tab des joueurs.
  */
 public class PlayerTab {
 
@@ -17,48 +21,48 @@ public class PlayerTab {
     private String footer;
 
     /**
-     * Instantiates a new Player tab.
+     * Constructeur de PlayerTab.
      *
-     * @param player the player
+     * @param player Le joueur concerné.
      */
-    public PlayerTab(Player player) {
-        this.player = player;
+    public PlayerTab(@NotNull Player player) {
+        this.player = Objects.requireNonNull(player, "Le joueur ne peut pas être null !");
         this.header = "";
         this.footer = "";
     }
 
     /**
-     * Sets header.
+     * Définit le header du menu Tab.
      *
-     * @param header the header
+     * @param header Texte du header.
      */
     public void setHeader(@NotNull String header) {
-        this.header = SimpleTextParser.parse(header.replace("%player_name%", player.getName()));
+        this.header = SimpleTextParser.parse(Objects.requireNonNullElse(header, "").replace("%player_name%", player.getName()));
     }
 
     /**
-     * Sets footer.
+     * Définit le footer du menu Tab.
      *
-     * @param footer the footer
+     * @param footer Texte du footer.
      */
     public void setFooter(@NotNull String footer) {
-        this.footer = SimpleTextParser.parse(footer.replace("%player_name%", player.getName()));
+        this.footer = SimpleTextParser.parse(Objects.requireNonNullElse(footer, "").replace("%player_name%", player.getName()));
     }
 
     /**
-     * Update.
+     * Met à jour l'affichage du Tab pour le joueur.
      */
     public void update() {
         try {
             Object packet = getTabPacket(header, footer);
             sendPacket(player, packet);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.SEVERE, "Erreur lors de la mise à jour du Tab pour " + player.getName(), e);
         }
     }
 
     /**
-     * Clear.
+     * Réinitialise le header et le footer du Tab.
      */
     public void clear() {
         setHeader("");
@@ -66,42 +70,63 @@ public class PlayerTab {
         update();
     }
 
+    /**
+     * Génère un packet pour modifier le header/footer du Tab.
+     *
+     * @param header Texte du header.
+     * @param footer Texte du footer.
+     * @return Packet formaté pour Minecraft 1.20+.
+     * @throws Exception Si une erreur se produit lors de la réflexion.
+     */
     private @NotNull Object getTabPacket(String header, String footer) throws Exception {
-        Class<?> chatComponentText = getNMSClass("ChatComponentText");
-        Class<?> packetPlayOutPlayerListHeaderFooter = getNMSClass("PacketPlayOutPlayerListHeaderFooter");
+        Class<?> iChatBaseComponent = getNMSClass("net.minecraft.network.chat.IChatBaseComponent");
+        Class<?> chatSerializer = getNMSClass("net.minecraft.network.chat.IChatBaseComponent$ChatSerializer");
+        Class<?> packetClass = getNMSClass("net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter");
 
-        Object headerText = chatComponentText.getConstructor(String.class).newInstance(header);
-        Object footerText = chatComponentText.getConstructor(String.class).newInstance(footer);
+        // Utilisation du ChatSerializer pour créer des composants de texte
+        Method aMethod = chatSerializer.getMethod("a", String.class);
+        Object headerText = aMethod.invoke(null, "{\"text\":\"" + header + "\"}");
+        Object footerText = aMethod.invoke(null, "{\"text\":\"" + footer + "\"}");
 
-        Object packet = packetPlayOutPlayerListHeaderFooter.getConstructor().newInstance();
-        packetPlayOutPlayerListHeaderFooter.getField("a").set(packet, headerText);
-        packetPlayOutPlayerListHeaderFooter.getField("b").set(packet, footerText);
-
-        return packet;
+        // Construction du packet
+        return packetClass.getConstructor(iChatBaseComponent, iChatBaseComponent).newInstance(headerText, footerText);
     }
 
+    /**
+     * Envoie un packet au joueur.
+     *
+     * @param player Joueur cible.
+     * @param packet Packet à envoyer.
+     * @throws Exception Si une erreur se produit lors de l'envoi.
+     */
     private void sendPacket(@NotNull Player player, Object packet) throws Exception {
         Object handle = player.getClass().getMethod("getHandle").invoke(player);
-        Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
-        Method sendPacket = playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet"));
-        sendPacket.invoke(playerConnection, packet);
+
+        Field connectionField = Arrays.stream(handle.getClass().getDeclaredFields())
+                .filter(field -> field.getType().getSimpleName().contains("Connection"))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchFieldException("Impossible de trouver le champ de connexion !"));
+
+        connectionField.setAccessible(true);
+        Object connection = connectionField.get(handle);
+
+        Method sendPacket = connection.getClass().getMethod("a", getNMSClass("net.minecraft.network.protocol.Packet"));
+        sendPacket.invoke(connection, packet);
     }
 
+    /**
+     * Récupère une classe NMS sans version spécifique.
+     *
+     * @param name Nom de la classe NMS complète.
+     * @return La classe correspondante.
+     * @throws ClassNotFoundException Si la classe n'existe pas.
+     */
     private @NotNull Class<?> getNMSClass(String name) throws ClassNotFoundException {
-        return Class.forName("net.minecraft.server." + getServerVersion() + "." + name);
-    }
-
-    private @NotNull String getServerVersion() {
-        String[] versionParts = Bukkit.getServer().getBukkitVersion().split("\\.");
-
-        if (versionParts.length < 3) {
-            return "unknown";
+        try {
+            return Class.forName(name);
+        } catch (ClassNotFoundException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Impossible de trouver la classe NMS : " + name, e);
+            throw e;
         }
-
-        String major = versionParts[0];
-        String minor = versionParts[1];
-        String patch = versionParts.length >= 3 ? versionParts[2].split("-")[0] : "0";
-
-        return major + "." + minor + "." + patch;
     }
 }
