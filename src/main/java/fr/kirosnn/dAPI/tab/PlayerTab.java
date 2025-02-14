@@ -27,8 +27,8 @@ public class PlayerTab {
      */
     public PlayerTab(@NotNull Player player) {
         this.player = Objects.requireNonNull(player, "Le joueur ne peut pas être null !");
-        this.header = "";
-        this.footer = "";
+        this.header = SimpleTextParser.parse((header != null ? header : "").replace("%player_name%", player.getName()));
+        this.footer = SimpleTextParser.parse((footer != null ? footer : "").replace("%player_name%", player.getName()));
     }
 
     /**
