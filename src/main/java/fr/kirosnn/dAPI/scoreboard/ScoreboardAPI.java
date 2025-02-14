@@ -10,55 +10,32 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * The type Scoreboard api.
- */
 public class ScoreboardAPI {
-
     private final Map<UUID, PlayerScoreboard> playerScoreboards = new HashMap<>();
     private final JavaPlugin plugin;
     private int updateTaskId = -1;
 
-    /**
-     * Instantiates a new Scoreboard api.
-     *
-     * @param plugin the plugin
-     */
     public ScoreboardAPI(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
-    /**
-     * Sets scoreboard.
-     *
-     * @param player the player
-     * @param title  the title
-     * @param lines  the lines
-     */
     public void setScoreboard(@NotNull Player player, String title, @NotNull List<String> lines) {
-        if (!player.isOnline()) return;
-
-        UUID playerId = player.getUniqueId();
-        PlayerScoreboard scoreboard = playerScoreboards.computeIfAbsent(playerId, id -> new PlayerScoreboard(player));
-
-        scoreboard.setTitle(title);
-        scoreboard.setLines(lines.stream()
-                .map(line -> SimpleTextParser.parse(line.replace("%player_name%", player.getName())))
-                .collect(Collectors.toList()));
-
-        // Vérifier si le scoreboard est encore valide avant d'appeler update()
-        if (scoreboard.isValid()) {
-            scoreboard.update();
+        if (player.isOnline()) {
+            UUID playerId = player.getUniqueId();
+            PlayerScoreboard scoreboard = playerScoreboards.computeIfAbsent(playerId, id -> new PlayerScoreboard(player));
+            scoreboard.setTitle(title);
+            scoreboard.setLines(lines.stream()
+                    .map(line -> SimpleTextParser.parse(line.replace("%player_name%", player.getName())))
+                    .collect(Collectors.toList()));
+            if (scoreboard.isValid()) {
+                scoreboard.update();
+            }
         }
     }
 
-    /**
-     * Remove scoreboard.
-     *
-     * @param player the player
-     */
     public void removeScoreboard(@NotNull Player player) {
         PlayerScoreboard scoreboard = playerScoreboards.remove(player.getUniqueId());
         if (scoreboard != null) {
@@ -66,120 +43,90 @@ public class ScoreboardAPI {
         }
     }
 
-    /**
-     * Clear all scoreboards.
-     */
     public void clearAllScoreboards() {
         playerScoreboards.values().forEach(PlayerScoreboard::clear);
         playerScoreboards.clear();
     }
 
-    /**
-     * Start auto update.
-     *
-     * @param interval the interval
-     * @param title    the title
-     * @param lines    the lines
-     */
-    public void startAutoUpdate(int interval, String title, List<String> lines) {
-        stopAutoUpdate();
-
-        updateTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+    // ✅ Modification pour accepter une fonction dynamique
+    public void startAutoUpdate(int interval, Function<Player, ScoreboardData> dataFunction) {
+        this.stopAutoUpdate();
+        this.updateTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                setScoreboard(player, title, lines);
+                ScoreboardData data = dataFunction.apply(player);
+                this.setScoreboard(player, data.getTitle(), data.getLines());
             }
         }, 0L, interval);
     }
 
-    /**
-     * Stop auto update.
-     */
     public void stopAutoUpdate() {
-        if (updateTaskId != -1) {
-            Bukkit.getScheduler().cancelTask(updateTaskId);
-            updateTaskId = -1;
+        if (this.updateTaskId != -1) {
+            Bukkit.getScheduler().cancelTask(this.updateTaskId);
+            this.updateTaskId = -1;
         }
     }
 
     private static class PlayerScoreboard {
+        private final Scoreboard scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
+        private Objective objective = this.createObjective();
+        private final LinkedHashSet<String> lines = new LinkedHashSet<>();
 
-        private final Scoreboard scoreboard;
-        private Objective objective;
-        private final LinkedHashSet<String> lines;
-
-        /**
-         * Instantiates a new Player scoreboard.
-         *
-         * @param player the player
-         */
         public PlayerScoreboard(@NotNull Player player) {
-            this.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-            this.objective = createObjective();
-            this.lines = new LinkedHashSet<>();
-            player.setScoreboard(scoreboard);
+            player.setScoreboard(this.scoreboard);
         }
 
-        /**
-         * Creates a new objective.
-         *
-         * @return the objective
-         */
         private Objective createObjective() {
-            Objective obj = scoreboard.registerNewObjective("main", "dummy", SimpleTextParser.parse("Scoreboard"));
+            Objective obj = this.scoreboard.registerNewObjective("main", "dummy", SimpleTextParser.parse("Scoreboard"));
             obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             return obj;
         }
 
-        /**
-         * Sets title.
-         *
-         * @param title the title
-         */
         public void setTitle(String title) {
-            if (objective != null) {
-                objective.setDisplayName(SimpleTextParser.parse(title));
+            if (this.objective != null) {
+                this.objective.setDisplayName(SimpleTextParser.parse(title));
             }
         }
 
-        /**
-         * Sets lines.
-         *
-         * @param lines the lines
-         */
         public void setLines(List<String> lines) {
             this.lines.clear();
             this.lines.addAll(lines);
         }
 
-        /**
-         * Update.
-         */
         public void update() {
-            if (!isValid()) {
-                objective = createObjective(); // Recréer l'objectif s'il a été supprimé
+            if (!this.isValid()) {
+                this.objective = this.createObjective();
             }
-
-            clear();
-            int score = lines.size();
-            for (String line : lines) {
-                objective.getScore(SimpleTextParser.parse(line)).setScore(score--);
+            this.clear();
+            int score = this.lines.size();
+            for (String line : this.lines) {
+                this.objective.getScore(SimpleTextParser.parse(line)).setScore(score--);
             }
         }
 
-        /**
-         * Vérifie si l'objectif est encore valide.
-         *
-         * @return true si valide, sinon false
-         */
         public boolean isValid() {
-            return objective != null && scoreboard.getObjective("main") != null;
+            return this.objective != null && this.scoreboard.getObjective("main") != null;
         }
 
-        /**
-         * Clear.
-         */
         public void clear() {
-            scoreboard.getEntries().forEach(scoreboard::resetScores);
+            this.scoreboard.getEntries().forEach(this.scoreboard::resetScores);
+        }
+    }
+
+    public static class ScoreboardData {
+        private final String title;
+        private final List<String> lines;
+
+        public ScoreboardData(String title, List<String> lines) {
+            this.title = title;
+            this.lines = lines;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public List<String> getLines() {
+            return lines;
         }
     }
 }
