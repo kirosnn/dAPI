@@ -37,7 +37,7 @@ public class PlayerTab {
      * @param header Texte du header.
      */
     public void setHeader(@NotNull String header) {
-        this.header = SimpleTextParser.parse(Objects.requireNonNullElse(header, "").replace("%player_name%", player.getName()));
+        this.header = SimpleTextParser.parse((header != null ? header : "").replace("%player_name%", player.getName()));
     }
 
     /**
@@ -46,7 +46,7 @@ public class PlayerTab {
      * @param footer Texte du footer.
      */
     public void setFooter(@NotNull String footer) {
-        this.footer = SimpleTextParser.parse(Objects.requireNonNullElse(footer, "").replace("%player_name%", player.getName()));
+        this.footer = SimpleTextParser.parse((footer != null ? footer : "").replace("%player_name%", player.getName()));
     }
 
     /**
