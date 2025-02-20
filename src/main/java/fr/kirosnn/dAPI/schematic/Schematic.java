@@ -19,8 +19,14 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+/**
+ * The type Schematic.
+ */
 public final class Schematic {
 
+    /**
+     * The constant DATA_VERSION.
+     */
     public static final int DATA_VERSION = 2;
     private final int dataVersion;
     private final String minecraftVersion;
@@ -29,6 +35,16 @@ public final class Schematic {
     private final List<Short> blocks;
     private final Map<String, List<Location>> waypoints;
 
+    /**
+     * Instantiates a new Schematic.
+     *
+     * @param dataVersion      the data version
+     * @param minecraftVersion the minecraft version
+     * @param dimensions       the dimensions
+     * @param palette          the palette
+     * @param blocks           the blocks
+     * @param waypoints        the waypoints
+     */
     public Schematic(int dataVersion, String minecraftVersion, Vector dimensions,
                      List<BlockData> palette, List<Short> blocks, Map<String, List<Location>> waypoints) {
         this.dataVersion = dataVersion;
@@ -39,11 +55,27 @@ public final class Schematic {
         this.waypoints = waypoints;
     }
 
+    /**
+     * Instantiates a new Schematic.
+     *
+     * @param dataVersion      the data version
+     * @param minecraftVersion the minecraft version
+     * @param dimensions       the dimensions
+     * @param palette          the palette
+     * @param blocks           the blocks
+     */
     public Schematic(int dataVersion, String minecraftVersion, Vector dimensions,
                      List<BlockData> palette, List<Short> blocks) {
         this(dataVersion, minecraftVersion, dimensions, palette, blocks, new HashMap<>());
     }
 
+    /**
+     * Create schematic.
+     *
+     * @param pos1 the pos 1
+     * @param pos2 the pos 2
+     * @return the schematic
+     */
     @NotNull
     public static Schematic create(@NotNull Location pos1, @NotNull Location pos2) {
         Preconditions.checkArgument(pos1.getWorld() != null || pos2.getWorld() != null,
@@ -51,6 +83,13 @@ public final class Schematic {
         return create(pos1.getBlock(), pos2.getBlock());
     }
 
+    /**
+     * Create schematic.
+     *
+     * @param pos1 the pos 1
+     * @param pos2 the pos 2
+     * @return the schematic
+     */
     @NotNull
     public static Schematic create(@NotNull Block pos1, @NotNull Block pos2) {
         Preconditions.checkArgument(pos1.getWorld() == pos2.getWorld(), "Blocks must be in the same world");
@@ -61,6 +100,14 @@ public final class Schematic {
                 data.dimensions, data.palette, data.blocks);
     }
 
+    /**
+     * Create schematic.
+     *
+     * @param pos1      the pos 1
+     * @param pos2      the pos 2
+     * @param waypoints the waypoints
+     * @return the schematic
+     */
     @NotNull
     public static Schematic create(
             @NotNull Location pos1,
@@ -72,6 +119,14 @@ public final class Schematic {
         return create(pos1.getBlock(), pos2.getBlock(), waypoints);
     }
 
+    /**
+     * Create schematic.
+     *
+     * @param pos1      the pos 1
+     * @param pos2      the pos 2
+     * @param waypoints the waypoints
+     * @return the schematic
+     */
     @NotNull
     public static Schematic create(
             @NotNull Block pos1,
@@ -99,6 +154,14 @@ public final class Schematic {
                 data.dimensions, data.palette, data.blocks, offsetWaypoints);
     }
 
+    /**
+     * Create async completable future.
+     *
+     * @param pos1   the pos 1
+     * @param pos2   the pos 2
+     * @param plugin the plugin
+     * @return the completable future
+     */
     @NotNull
     public static CompletableFuture<Schematic> createAsync(
             @NotNull Location pos1,
@@ -112,6 +175,14 @@ public final class Schematic {
         return future;
     }
 
+    /**
+     * Create async completable future.
+     *
+     * @param pos1   the pos 1
+     * @param pos2   the pos 2
+     * @param plugin the plugin
+     * @return the completable future
+     */
     @NotNull
     public static CompletableFuture<Schematic> createAsync(
             @NotNull Block pos1,
@@ -121,6 +192,15 @@ public final class Schematic {
         return createAsync(pos1.getLocation(), pos2.getLocation(), plugin);
     }
 
+    /**
+     * Create async completable future.
+     *
+     * @param pos1      the pos 1
+     * @param pos2      the pos 2
+     * @param waypoints the waypoints
+     * @param plugin    the plugin
+     * @return the completable future
+     */
     @NotNull
     public static CompletableFuture<Schematic> createAsync(
             @NotNull Location pos1,
@@ -135,6 +215,15 @@ public final class Schematic {
         return future;
     }
 
+    /**
+     * Create async completable future.
+     *
+     * @param pos1      the pos 1
+     * @param pos2      the pos 2
+     * @param waypoints the waypoints
+     * @param plugin    the plugin
+     * @return the completable future
+     */
     @NotNull
     public static CompletableFuture<Schematic> createAsync(
             @NotNull Block pos1,
@@ -145,6 +234,13 @@ public final class Schematic {
         return createAsync(pos1.getLocation(), pos2.getLocation(), waypoints, plugin);
     }
 
+    /**
+     * Load schematic.
+     *
+     * @param file the file
+     * @param type the type
+     * @return the schematic
+     */
     @Nullable
     public static Schematic load(@NotNull File file, @NotNull FileType type) {
         Preconditions.checkNotNull(file, "File is null");
@@ -153,21 +249,48 @@ public final class Schematic {
         return type.load(file);
     }
 
+    /**
+     * Load schematic.
+     *
+     * @param file the file
+     * @param type the type
+     * @return the schematic
+     */
     @Nullable
     public static Schematic load(@NotNull String file, @NotNull FileType type) {
         return type.load(new File(file));
     }
 
+    /**
+     * Load schematic.
+     *
+     * @param file the file
+     * @return the schematic
+     */
     @Nullable
     public static Schematic load(@NotNull File file) {
         return load(file, new JsonSchematic());
     }
 
+    /**
+     * Load schematic.
+     *
+     * @param file the file
+     * @return the schematic
+     */
     @Nullable
     public static Schematic load(@NotNull String file) {
         return load(file, new JsonSchematic());
     }
 
+    /**
+     * Load async completable future.
+     *
+     * @param file   the file
+     * @param type   the type
+     * @param plugin the plugin
+     * @return the completable future
+     */
     public static @NotNull CompletableFuture<Schematic> loadAsync(
             @NotNull File file,
             @NotNull FileType type,
@@ -180,14 +303,36 @@ public final class Schematic {
         return future;
     }
 
+    /**
+     * Load async completable future.
+     *
+     * @param file   the file
+     * @param type   the type
+     * @param plugin the plugin
+     * @return the completable future
+     */
     public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull FileType type, @NotNull Plugin plugin) {
         return loadAsync(new File(file), type, plugin);
     }
 
+    /**
+     * Load async completable future.
+     *
+     * @param file   the file
+     * @param plugin the plugin
+     * @return the completable future
+     */
     public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull File file, @NotNull Plugin plugin) {
         return loadAsync(file, new JsonSchematic(), plugin);
     }
 
+    /**
+     * Load async completable future.
+     *
+     * @param file   the file
+     * @param plugin the plugin
+     * @return the completable future
+     */
     public static @NotNull CompletableFuture<Schematic> loadAsync(@NotNull String file, @NotNull Plugin plugin) {
         return loadAsync(new File(file), plugin);
     }
@@ -232,6 +377,13 @@ public final class Schematic {
         return new BlocksData(dimensions, palette, blocks);
     }
 
+    /**
+     * Save boolean.
+     *
+     * @param file the file
+     * @param type the type
+     * @return the boolean
+     */
     public boolean save(@NotNull File file, @NotNull FileType type) {
         Preconditions.checkNotNull(file, "File is null");
         Preconditions.checkNotNull(type, "File type is null");
@@ -239,18 +391,45 @@ public final class Schematic {
         return type.save(this, file);
     }
 
+    /**
+     * Save boolean.
+     *
+     * @param file the file
+     * @param type the type
+     * @return the boolean
+     */
     public boolean save(@NotNull String file, @NotNull FileType type) {
         return save(new File(file), type);
     }
 
+    /**
+     * Save boolean.
+     *
+     * @param file the file
+     * @return the boolean
+     */
     public boolean save(@NotNull File file) {
         return save(file, new JsonSchematic());
     }
 
+    /**
+     * Save boolean.
+     *
+     * @param file the file
+     * @return the boolean
+     */
     public boolean save(@NotNull String file) {
         return save(new File(file));
     }
 
+    /**
+     * Save async completable future.
+     *
+     * @param file   the file
+     * @param type   the type
+     * @param plugin the plugin
+     * @return the completable future
+     */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull File file, @NotNull FileType type, @NotNull Plugin plugin) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -260,25 +439,61 @@ public final class Schematic {
         return future;
     }
 
+    /**
+     * Save async completable future.
+     *
+     * @param file   the file
+     * @param type   the type
+     * @param plugin the plugin
+     * @return the completable future
+     */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull String file, @NotNull FileType type, @NotNull Plugin plugin) {
         return saveAsync(new File(file), type, plugin);
     }
 
+    /**
+     * Save async completable future.
+     *
+     * @param file   the file
+     * @param plugin the plugin
+     * @return the completable future
+     */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull File file, @NotNull Plugin plugin) {
         return saveAsync(file, new JsonSchematic(), plugin);
     }
 
+    /**
+     * Save async completable future.
+     *
+     * @param file   the file
+     * @param plugin the plugin
+     * @return the completable future
+     */
     @NotNull
     public CompletableFuture<Boolean> saveAsync(@NotNull String file, @NotNull Plugin plugin) {
         return saveAsync(new File(file), plugin);
     }
 
+    /**
+     * Paste list.
+     *
+     * @param location the location
+     * @param skipAir  the skip air
+     * @return the list
+     */
     public @NotNull List<Block> paste(@NotNull Location location, boolean skipAir) {
         return paste(location.getBlock(), skipAir);
     }
 
+    /**
+     * Paste list.
+     *
+     * @param block   the block
+     * @param skipAir the skip air
+     * @return the list
+     */
     public @NotNull List<Block> paste(@NotNull Block block, boolean skipAir) {
         Preconditions.checkNotNull(block, "Block is null");
 
@@ -330,11 +545,25 @@ public final class Schematic {
         return new Vector(Math.floor(vector.getX()), Math.floor(vector.getY()), Math.floor(vector.getZ()));
     }
 
+    /**
+     * Gets waypoints.
+     *
+     * @param pastedAt the pasted at
+     * @param name     the name
+     * @return the waypoints
+     */
     @Nullable
     public List<Location> getWaypoints(@NotNull Location pastedAt, @NotNull String name) {
         return getWaypoints(pastedAt.getBlock(), name);
     }
 
+    /**
+     * Gets waypoints.
+     *
+     * @param pastedAt the pasted at
+     * @param name     the name
+     * @return the waypoints
+     */
     @Nullable
     public List<Location> getWaypoints(@NotNull Block pastedAt, @NotNull String name) {
         Preconditions.checkNotNull(pastedAt.getWorld(), "World is null");
@@ -352,11 +581,25 @@ public final class Schematic {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets waypoint.
+     *
+     * @param pastedAt the pasted at
+     * @param name     the name
+     * @return the waypoint
+     */
     @Nullable
     public Location getWaypoint(@NotNull Location pastedAt, @NotNull String name) {
         return getWaypoint(pastedAt.getBlock(), name);
     }
 
+    /**
+     * Gets waypoint.
+     *
+     * @param pastedAt the pasted at
+     * @param name     the name
+     * @return the waypoint
+     */
     @Nullable
     public Location getWaypoint(@NotNull Block pastedAt, @NotNull String name) {
         Preconditions.checkNotNull(pastedAt.getWorld(), "World is null");
@@ -376,54 +619,109 @@ public final class Schematic {
         return added.clone().add(pastedAt.getLocation());
     }
 
+    /**
+     * Gets data version.
+     *
+     * @return the data version
+     */
     public int getDataVersion() {
         return dataVersion;
     }
 
+    /**
+     * Gets minecraft version.
+     *
+     * @return the minecraft version
+     */
     @NotNull
     public String getMinecraftVersion() {
         return minecraftVersion;
     }
 
+    /**
+     * Gets dimensions.
+     *
+     * @return the dimensions
+     */
     @NotNull
     public Vector getDimensions() {
         return dimensions.clone().add(new Vector(1, 1, 1));
     }
 
+    /**
+     * Gets palette.
+     *
+     * @return the palette
+     */
     @NotNull
     @UnmodifiableView
     public List<BlockData> getPalette() {
         return Collections.unmodifiableList(palette);
     }
 
+    /**
+     * Gets blocks.
+     *
+     * @return the blocks
+     */
     @NotNull
     @UnmodifiableView
     public List<Short> getBlocks() {
         return Collections.unmodifiableList(blocks);
     }
 
+    /**
+     * Gets waypoints.
+     *
+     * @return the waypoints
+     */
     @NotNull
     @UnmodifiableView
     public Map<String, List<Location>> getWaypoints() {
         return Collections.unmodifiableMap(waypoints);
     }
 
+    /**
+     * Data version int.
+     *
+     * @return the int
+     */
     public int dataVersion() {
         return dataVersion;
     }
 
+    /**
+     * Minecraft version string.
+     *
+     * @return the string
+     */
     public String minecraftVersion() {
         return minecraftVersion;
     }
 
+    /**
+     * Dimensions vector.
+     *
+     * @return the vector
+     */
     public Vector dimensions() {
         return dimensions;
     }
 
+    /**
+     * Palette list.
+     *
+     * @return the list
+     */
     public List<BlockData> palette() {
         return palette;
     }
 
+    /**
+     * Blocks list.
+     *
+     * @return the list
+     */
     public List<Short> blocks() {
         return blocks;
     }
@@ -457,25 +755,50 @@ public final class Schematic {
                 "blocks=" + blocks + ']';
     }
 
+    /**
+     * The type Blocks data.
+     */
     public static class BlocksData {
         private final Vector dimensions;
         private final List<BlockData> palette;
         private final List<Short> blocks;
 
+        /**
+         * Instantiates a new Blocks data.
+         *
+         * @param dimensions the dimensions
+         * @param palette    the palette
+         * @param blocks     the blocks
+         */
         public BlocksData(Vector dimensions, List<BlockData> palette, List<Short> blocks) {
             this.dimensions = dimensions;
             this.palette = palette;
             this.blocks = blocks;
         }
 
+        /**
+         * Gets dimensions.
+         *
+         * @return the dimensions
+         */
         public Vector getDimensions() {
             return dimensions;
         }
 
+        /**
+         * Gets palette.
+         *
+         * @return the palette
+         */
         public List<BlockData> getPalette() {
             return palette;
         }
 
+        /**
+         * Gets blocks.
+         *
+         * @return the blocks
+         */
         public List<Short> getBlocks() {
             return blocks;
         }

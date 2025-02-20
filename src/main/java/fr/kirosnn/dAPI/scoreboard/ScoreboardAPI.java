@@ -13,15 +13,30 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * The type Scoreboard api.
+ */
 public class ScoreboardAPI {
     private final Map<UUID, PlayerScoreboard> playerScoreboards = new HashMap<>();
     private final JavaPlugin plugin;
     private int updateTaskId = -1;
 
+    /**
+     * Instantiates a new Scoreboard api.
+     *
+     * @param plugin the plugin
+     */
     public ScoreboardAPI(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * Sets scoreboard.
+     *
+     * @param player the player
+     * @param title  the title
+     * @param lines  the lines
+     */
     public void setScoreboard(@NotNull Player player, String title, @NotNull List<String> lines) {
         if (player.isOnline()) {
             UUID playerId = player.getUniqueId();
@@ -36,6 +51,11 @@ public class ScoreboardAPI {
         }
     }
 
+    /**
+     * Remove scoreboard.
+     *
+     * @param player the player
+     */
     public void removeScoreboard(@NotNull Player player) {
         PlayerScoreboard scoreboard = playerScoreboards.remove(player.getUniqueId());
         if (scoreboard != null) {
@@ -43,12 +63,21 @@ public class ScoreboardAPI {
         }
     }
 
+    /**
+     * Clear all scoreboards.
+     */
     public void clearAllScoreboards() {
         playerScoreboards.values().forEach(PlayerScoreboard::clear);
         playerScoreboards.clear();
     }
 
-    // ✅ Modification pour accepter une fonction dynamique
+    /**
+     * Start auto update.
+     *
+     * @param interval     the interval
+     * @param dataFunction the data function
+     */
+// ✅ Modification pour accepter une fonction dynamique
     public void startAutoUpdate(int interval, Function<Player, ScoreboardData> dataFunction) {
         this.stopAutoUpdate();
         this.updateTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
@@ -59,6 +88,9 @@ public class ScoreboardAPI {
         }, 0L, interval);
     }
 
+    /**
+     * Stop auto update.
+     */
     public void stopAutoUpdate() {
         if (this.updateTaskId != -1) {
             Bukkit.getScheduler().cancelTask(this.updateTaskId);
@@ -71,6 +103,11 @@ public class ScoreboardAPI {
         private Objective objective = this.createObjective();
         private final LinkedHashSet<String> lines = new LinkedHashSet<>();
 
+        /**
+         * Instantiates a new Player scoreboard.
+         *
+         * @param player the player
+         */
         public PlayerScoreboard(@NotNull Player player) {
             player.setScoreboard(this.scoreboard);
         }
@@ -81,17 +118,30 @@ public class ScoreboardAPI {
             return obj;
         }
 
+        /**
+         * Sets title.
+         *
+         * @param title the title
+         */
         public void setTitle(String title) {
             if (this.objective != null) {
                 this.objective.setDisplayName(SimpleTextParser.parse(title));
             }
         }
 
+        /**
+         * Sets lines.
+         *
+         * @param lines the lines
+         */
         public void setLines(List<String> lines) {
             this.lines.clear();
             this.lines.addAll(lines);
         }
 
+        /**
+         * Update.
+         */
         public void update() {
             if (!this.isValid()) {
                 this.objective = this.createObjective();
@@ -103,28 +153,55 @@ public class ScoreboardAPI {
             }
         }
 
+        /**
+         * Is valid boolean.
+         *
+         * @return the boolean
+         */
         public boolean isValid() {
             return this.objective != null && this.scoreboard.getObjective("main") != null;
         }
 
+        /**
+         * Clear.
+         */
         public void clear() {
             this.scoreboard.getEntries().forEach(this.scoreboard::resetScores);
         }
     }
 
+    /**
+     * The type Scoreboard data.
+     */
     public static class ScoreboardData {
         private final String title;
         private final List<String> lines;
 
+        /**
+         * Instantiates a new Scoreboard data.
+         *
+         * @param title the title
+         * @param lines the lines
+         */
         public ScoreboardData(String title, List<String> lines) {
             this.title = title;
             this.lines = lines;
         }
 
+        /**
+         * Gets title.
+         *
+         * @return the title
+         */
         public String getTitle() {
             return title;
         }
 
+        /**
+         * Gets lines.
+         *
+         * @return the lines
+         */
         public List<String> getLines() {
             return lines;
         }

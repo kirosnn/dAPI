@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 public class BroadcastUtils {
 
     /**
-     * Sends a global chat message.
+     * Send global message.
      *
-     * @param message The message to send.
+     * @param message the message
      */
     public static void sendGlobalMessage(String message) {
         if (message == null || message.isEmpty()) return;
@@ -24,9 +24,9 @@ public class BroadcastUtils {
     }
 
     /**
-     * Sends an action bar message to all online players.
+     * Send action bar.
      *
-     * @param message The message to send.
+     * @param message the message
      */
     public static void sendActionBar(String message) {
         if (message == null || message.isEmpty()) return;
@@ -38,13 +38,13 @@ public class BroadcastUtils {
     }
 
     /**
-     * Sends a title to all online players.
+     * Send title.
      *
-     * @param title    The title.
-     * @param subtitle The subtitle.
-     * @param fadeIn   The fade-in time.
-     * @param stay     The stay duration.
-     * @param fadeOut  The fade-out time.
+     * @param title    the title
+     * @param subtitle the subtitle
+     * @param fadeIn   the fade in
+     * @param stay     the stay
+     * @param fadeOut  the fade out
      */
     public static void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
         String formattedTitle = SimpleTextParser.parse(title);
@@ -56,11 +56,11 @@ public class BroadcastUtils {
     }
 
     /**
-     * Plays a global sound for all online players.
+     * Send global sound.
      *
-     * @param sound  The sound to play.
-     * @param volume The volume.
-     * @param pitch  The pitch.
+     * @param sound  the sound
+     * @param volume the volume
+     * @param pitch  the pitch
      */
     public static void sendGlobalSound(Sound sound, float volume, float pitch) {
         if (sound == null) return;
@@ -71,10 +71,10 @@ public class BroadcastUtils {
     }
 
     /**
-     * Sends a global announcement with a message and optional sound.
+     * Send global announcement.
      *
-     * @param message The announcement message.
-     * @param sound   The sound to play (can be null).
+     * @param message the message
+     * @param sound   the sound
      */
     public static void sendGlobalAnnouncement(String message, Sound sound) {
         sendGlobalMessage(message);

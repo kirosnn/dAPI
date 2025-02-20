@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 public class ActionBarUtils {
 
     /**
-     * Sends an action bar message to a player.
+     * Send action bar.
      *
-     * @param player  The player receiving the message.
-     * @param message The message to send.
+     * @param player  the player
+     * @param message the message
      */
     public static void sendActionBar(Player player, String message) {
         if (player == null || message == null || message.isEmpty()) return;

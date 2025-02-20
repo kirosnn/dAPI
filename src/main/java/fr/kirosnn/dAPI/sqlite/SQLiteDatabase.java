@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.logging.Level;
 
 /**
- * A simple SQLite database manager for Bukkit plugins.
+ * The type Sq lite database.
  */
 public class SQLiteDatabase {
 
@@ -18,11 +18,11 @@ public class SQLiteDatabase {
     private final Plugin plugin;
 
     /**
-     * Initializes a new SQLite database.
+     * Instantiates a new Sq lite database.
      *
-     * @param plugin the Bukkit plugin
-     * @param dbName the name of the database file
-     * @throws IOException if the file creation fails
+     * @param plugin the plugin
+     * @param dbName the db name
+     * @throws IOException the io exception
      */
     public SQLiteDatabase(@NotNull Plugin plugin, @NotNull String dbName) throws IOException {
         this.plugin = plugin;
@@ -39,7 +39,7 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Establishes a connection to the database.
+     * Connect.
      */
     public synchronized void connect() {
         if (isConnected()) return;
@@ -54,7 +54,7 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Closes the database connection.
+     * Close.
      */
     public synchronized void close() {
         if (!isConnected()) return;
@@ -70,9 +70,9 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Checks if the database is connected.
+     * Is connected boolean.
      *
-     * @return true if connected, false otherwise
+     * @return the boolean
      */
     public boolean isConnected() {
         try {
@@ -83,9 +83,9 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Executes an SQL update query (INSERT, UPDATE, DELETE).
+     * Execute update.
      *
-     * @param query the SQL query
+     * @param query the query
      */
     public synchronized void executeUpdate(@NotNull String query) {
         if (!isConnected()) connect();
@@ -98,11 +98,10 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Executes an SQL query and returns a `ResultSet`.
-     * **⚠ IMPORTANT:** Make sure to close the `ResultSet` after use.
+     * Execute query result set.
      *
-     * @param query the SQL query
-     * @return a ResultSet containing the query results
+     * @param query the query
+     * @return the result set
      */
     public synchronized ResultSet executeQuery(@NotNull String query) {
         if (!isConnected()) connect();
@@ -117,9 +116,9 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Retrieves the current database connection.
+     * Gets connection.
      *
-     * @return the Connection object
+     * @return the connection
      */
     public Connection getConnection() {
         if (!isConnected()) connect();
@@ -127,7 +126,7 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Begins an SQL transaction.
+     * Begin transaction.
      */
     public synchronized void beginTransaction() {
         if (!isConnected()) connect();
@@ -140,7 +139,7 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Commits the current transaction.
+     * Commit transaction.
      */
     public synchronized void commitTransaction() {
         if (!isConnected()) return;
@@ -154,7 +153,7 @@ public class SQLiteDatabase {
     }
 
     /**
-     * Rolls back the current transaction.
+     * Rollback transaction.
      */
     public synchronized void rollbackTransaction() {
         if (!isConnected()) return;

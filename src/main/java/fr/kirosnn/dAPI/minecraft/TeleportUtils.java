@@ -10,21 +10,21 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Utility class for teleportation with effects and messages.
+ * The type Teleport utils.
  */
 public class TeleportUtils {
 
     /**
-     * Teleports a player to a specified location with optional cooldown, messages, and effects.
+     * Teleport.
      *
-     * @param player          The player to teleport.
-     * @param location        The destination location.
-     * @param cooldown        The cooldown in seconds before teleportation occurs.
-     * @param preTeleportMsg  The message sent before teleportation.
-     * @param postTeleportMsg The message sent after teleportation.
-     * @param soundEffect     The sound effect played after teleportation.
-     * @param particleEffect  The particle effect displayed before teleportation.
-     * @param plugin          The plugin instance used for scheduling tasks.
+     * @param player          the player
+     * @param location        the location
+     * @param cooldown        the cooldown
+     * @param preTeleportMsg  the pre teleport msg
+     * @param postTeleportMsg the post teleport msg
+     * @param soundEffect     the sound effect
+     * @param particleEffect  the particle effect
+     * @param plugin          the plugin
      */
     public static void teleport(Player player, Location location, int cooldown,
                                 String preTeleportMsg, String postTeleportMsg,
@@ -52,14 +52,6 @@ public class TeleportUtils {
         }
     }
 
-    /**
-     * Executes the actual teleportation, playing effects and sending messages.
-     *
-     * @param player          The player being teleported.
-     * @param location        The destination location.
-     * @param postTeleportMsg The message sent after teleportation.
-     * @param soundEffect     The sound effect played after teleportation.
-     */
     private static void performTeleport(@NotNull Player player, Location location, String postTeleportMsg, Sound soundEffect) {
         player.teleport(location);
 

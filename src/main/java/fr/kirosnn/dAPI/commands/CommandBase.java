@@ -1,20 +1,52 @@
 package fr.kirosnn.dAPI.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.Bukkit;
+import org.bukkit.command.*;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
  * The type Command base.
  */
-public abstract class CommandBase implements CommandExecutor, TabCompleter {
+public abstract class CommandBase implements org.bukkit.command.CommandExecutor, TabCompleter {
 
+    private static CommandMap commandMap;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
     private String noPermissionMessage = "§cYou don't have permission to use this command.";
+
+    /**
+     * Instantiates a new Command base.
+     *
+     * @param plugin the plugin
+     * @param name   the name
+     */
+    public CommandBase(@NotNull JavaPlugin plugin, @NotNull String name) {
+        registerCommand(plugin, name);
+    }
+
+    private void registerCommand(@NotNull JavaPlugin plugin, @NotNull String name) {
+        try {
+            if (commandMap == null) {
+                Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+                commandMapField.setAccessible(true);
+                commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
+            }
+
+            PluginCommand command = plugin.getCommand(name);
+            if (command != null) {
+                command.setExecutor(this);
+                command.setTabCompleter(this);
+            } else {
+                commandMap.register(plugin.getName(), new CustomBukkitCommand(name, this, this));
+            }
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to register command: " + name);
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Sets no permission message.
@@ -56,7 +88,6 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
                 return subCommand.execute(sender, args);
             }
         }
-
         return execute(sender, args);
     }
 
@@ -65,10 +96,8 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> completions = new ArrayList<>();
             for (String subCommandName : subCommands.keySet()) {
-                if (subCommandName.toLowerCase().startsWith(args[0].toLowerCase())) {
-                    if (subCommands.get(subCommandName).hasPermission(sender)) {
-                        completions.add(subCommandName);
-                    }
+                if (subCommandName.toLowerCase().startsWith(args[0].toLowerCase()) && subCommands.get(subCommandName).hasPermission(sender)) {
+                    completions.add(subCommandName);
                 }
             }
             return completions;
@@ -78,7 +107,6 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
                 return subCommand.tabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
             }
         }
-
         return new ArrayList<>();
     }
 

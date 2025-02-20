@@ -11,20 +11,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Handles animated BossBars for players.
+ * The type Boss bar manager.
  */
 public class BossBarManager {
 
     private static final Map<Player, BossBar> bossBars = new HashMap<>();
 
     /**
-     * Creates and shows a boss bar for a player.
+     * Show boss bar.
      *
-     * @param player   The player.
-     * @param message  The message.
-     * @param color    The bar color.
-     * @param style    The bar style.
-     * @param progress The initial progress (0.0 - 1.0).
+     * @param player   the player
+     * @param message  the message
+     * @param color    the color
+     * @param style    the style
+     * @param progress the progress
      */
     public static void showBossBar(Player player, String message, BarColor color, BarStyle style, double progress) {
         if (player == null || message == null) return;
@@ -38,11 +38,11 @@ public class BossBarManager {
     }
 
     /**
-     * Updates the boss bar message and progress.
+     * Update boss bar.
      *
-     * @param player   The player.
-     * @param message  The new message.
-     * @param progress The new progress (0.0 - 1.0).
+     * @param player   the player
+     * @param message  the message
+     * @param progress the progress
      */
     public static void updateBossBar(Player player, String message, double progress) {
         if (player == null || message == null) return;
@@ -55,9 +55,9 @@ public class BossBarManager {
     }
 
     /**
-     * Removes the boss bar from a player.
+     * Remove boss bar.
      *
-     * @param player The player.
+     * @param player the player
      */
     public static void removeBossBar(Player player) {
         if (player == null) return;
