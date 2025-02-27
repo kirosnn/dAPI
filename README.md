@@ -4,6 +4,8 @@
 
 **A detailed and user-friendly wiki is available to guide users through the installation, setup, and advanced usage of the API: https://wiki.kirosnn.fr/dapi/presentation/. This documentation is regularly updated to reflect the latest features and enhancements.**
 
+*Wiki not maintained more.*
+
 *While attribution is not mandatory, I kindly ask that you provide credit or inform me if you choose to reuse or redistribute the code from this API. This helps foster a sense of collaboration and mutual respect within the development community.*
 
 **This project is published on GitHub on open-source.**
