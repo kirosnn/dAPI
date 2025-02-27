@@ -45,6 +45,7 @@ public class ColorUtils {
      * @return the string
      */
     public static @NotNull String convertHexToBukkit(@NotNull String hex) {
+        hex = hex.toUpperCase();
         StringBuilder result = new StringBuilder("§x");
         for (char c : hex.toCharArray()) {
             result.append("§").append(c);
