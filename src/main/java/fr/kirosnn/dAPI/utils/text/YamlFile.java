@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * The type Yaml file.
@@ -92,7 +93,7 @@ public class YamlFile {
 
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             String key = "\\{" + entry.getKey() + "\\}";
-            value = value.replaceAll(key, entry.getValue());
+            value = value.replaceAll(key, Matcher.quoteReplacement(entry.getValue()));
         }
 
         return SimpleTextParser.parse(value);
